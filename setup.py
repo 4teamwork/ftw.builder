@@ -5,7 +5,10 @@ from setuptools import setup, find_packages
 version = '1.0.0.dev0'
 
 tests_require = [
+    'Acquisition',
+    'plone.app.testing',
     'unittest2',
+    'zope.configuration',
     ]
 
 
@@ -35,7 +38,10 @@ setup(name='ftw.builder',
       zip_safe=False,
 
       install_requires=[
+        'Products.CMFPlone',
         'setuptools',
+        'zope.component',
+        'zope.container',
         ],
 
       tests_require=tests_require,

@@ -16,3 +16,6 @@ class Registry(object):
             raise KeyError('Unkown builder "%s"' % name)
 
         return self.builders[name]
+
+
+builder_registry = Registry()
