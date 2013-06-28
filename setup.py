@@ -9,6 +9,7 @@ tests_require = [
     'plone.app.testing',
     'unittest2',
     'zope.configuration',
+    'plone.api',
     ]
 
 
