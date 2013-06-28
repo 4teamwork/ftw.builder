@@ -1,6 +1,7 @@
 from ftw.builder import builder_registry
 from ftw.builder.session import BuilderSession
 from zope.component.hooks import getSite
+import transaction
 
 
 def create(builder, **kwargs):
@@ -41,4 +42,5 @@ class PloneObjectBuilder(object):
         pass
 
     def after_create(self, obj):
-        pass
+        if self.session.auto_commit:
+            transaction.commit()
