@@ -1,3 +1,4 @@
+from StringIO import StringIO
 from ftw.builder import builder_registry
 from ftw.builder.builder import PloneObjectBuilder
 from zope.container.interfaces import INameChooser
@@ -45,3 +46,24 @@ class PageBuilder(ArchetypesBuilder):
 
 builder_registry.register('Page', PageBuilder)
 builder_registry.register('Document', PageBuilder)
+
+
+class FileBuilder(ArchetypesBuilder):
+
+    portal_type = 'File'
+
+    def attach_file_containing(self, content, name="test.doc"):
+        data = StringIO(content)
+        data.filename = name
+        self.attach(data)
+        return self
+
+    def attach(self, file_):
+        self.arguments['file'] = file_
+        return self
+
+    def with_dummy_content(self):
+        self.attach_file_containing("Test data")
+        return self
+
+builder_registry.register('File', FileBuilder)

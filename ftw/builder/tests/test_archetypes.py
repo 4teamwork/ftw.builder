@@ -43,3 +43,32 @@ class TestATPageBuilder(IntegrationTestCase):
     def test_alias_Document_also_works_for_creating_documents(self):
         page = create(Builder('Document'))
         self.assertEquals('Document', page.portal_type)
+
+
+class TestATFileBuilder(IntegrationTestCase):
+
+    def test_creates_a_File_object(self):
+        file_ = create(Builder('File'))
+        self.assertEquals('File', file_.portal_type)
+
+    def test_file_data_can_be_attached(self):
+        file_ = create(Builder('File')
+                       .attach_file_containing('Data Data', 'data.txt'))
+
+        self.assertEquals(
+            {'filename': 'data.txt',
+             'data': 'Data Data'},
+
+            {'filename': file_.getFile().filename,
+             'data': file_.getFile().data})
+
+    def test_dummy_content_can_be_attached(self):
+        file_ = create(Builder('File')
+                       .with_dummy_content())
+
+        self.assertEquals(
+            {'filename': 'test.doc',
+             'data': 'Test data'},
+
+            {'filename': file_.getFile().filename,
+             'data': file_.getFile().data})
