@@ -25,3 +25,10 @@ class TestArchetypesBuilder(IntegrationTestCase):
     def test_object_id_can_be_set(self):
         folder = create(Builder('Folder').with_id('bar'))
         self.assertEqual('bar', folder.getId())
+
+
+class TestATFolderBuilder(IntegrationTestCase):
+
+    def test_creates_a_folder(self):
+        folder = create(Builder('Folder'))
+        self.assertEquals('Folder', folder.portal_type)
