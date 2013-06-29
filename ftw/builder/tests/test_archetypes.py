@@ -33,3 +33,7 @@ class TestArchetypesBuilder(TestCase):
 
         folder2 = create(Builder('Folder').titled('Foo'))
         self.assertEqual('foo-1', folder2.getId())
+
+    def test_object_id_can_be_set(self):
+        folder = create(Builder('Folder').with_id('bar'))
+        self.assertEqual('bar', folder.getId())
