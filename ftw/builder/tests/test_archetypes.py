@@ -1,21 +1,9 @@
 from ftw.builder import Builder
 from ftw.builder import create
-from ftw.builder.testing import BUILDER_INTEGRATION_TESTING
-from plone.app.testing import TEST_USER_ID
-from plone.app.testing import TEST_USER_NAME
-from plone.app.testing import login
-from plone.app.testing import setRoles
-from unittest2 import TestCase
+from ftw.builder.tests import IntegrationTestCase
 
 
-class TestArchetypesBuilder(TestCase):
-
-    layer = BUILDER_INTEGRATION_TESTING
-
-    def setUp(self):
-        self.portal = self.layer['portal']
-        setRoles(self.portal, TEST_USER_ID, ['Manager'])
-        login(self.portal, TEST_USER_NAME)
+class TestArchetypesBuilder(IntegrationTestCase):
 
     def test_unmarks_creation_flag_with_procjessForm_by_default(self):
         folder = create(Builder('Folder'))

@@ -3,23 +3,11 @@ from Acquisition import aq_parent
 from Products.CMFCore.utils import getToolByName
 from ftw.builder import Builder
 from ftw.builder import create
-from ftw.builder.testing import BUILDER_INTEGRATION_TESTING
+from ftw.builder.tests import IntegrationTestCase
 from plone import api
-from plone.app.testing import TEST_USER_ID
-from plone.app.testing import TEST_USER_NAME
-from plone.app.testing import login
-from plone.app.testing import setRoles
-from unittest2 import TestCase
 
 
-class TestCreatingObjects(TestCase):
-
-    layer = BUILDER_INTEGRATION_TESTING
-
-    def setUp(self):
-        self.portal = self.layer['portal']
-        setRoles(self.portal, TEST_USER_ID, ['Manager'])
-        login(self.portal, TEST_USER_NAME)
+class TestCreatingObjects(IntegrationTestCase):
 
     def test_default_container_is_plone_site(self):
         folder = create(Builder('Folder'))
