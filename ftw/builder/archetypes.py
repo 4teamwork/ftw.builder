@@ -5,11 +5,15 @@ from zope.container.interfaces import INameChooser
 
 class ArchetypesBuilder(PloneObjectBuilder):
 
-    def create_object(self):
+    def create_object(self, processForm=True):
         name = self.choose_name()
         self.container.invokeFactory(
             self.portal_type, name, **self.arguments)
-        return self.container.get(name)
+        obj = self.container.get(name)
+
+        if processForm:
+            obj.processForm()
+        return obj
 
     def choose_name(self):
         title = self.arguments.get('title', self.portal_type)
