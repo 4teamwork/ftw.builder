@@ -32,3 +32,14 @@ class TestATFolderBuilder(IntegrationTestCase):
     def test_creates_a_folder(self):
         folder = create(Builder('Folder'))
         self.assertEquals('Folder', folder.portal_type)
+
+
+class TestATPageBuilder(IntegrationTestCase):
+
+    def test_Page_builder_creates_a_Document(self):
+        page = create(Builder('Page'))
+        self.assertEquals('Document', page.portal_type)
+
+    def test_alias_Document_also_works_for_creating_documents(self):
+        page = create(Builder('Document'))
+        self.assertEquals('Document', page.portal_type)

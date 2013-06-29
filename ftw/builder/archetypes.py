@@ -37,3 +37,11 @@ class FolderBuilder(ArchetypesBuilder):
     portal_type = 'Folder'
 
 builder_registry.register('Folder', FolderBuilder)
+
+
+class PageBuilder(ArchetypesBuilder):
+
+    portal_type = 'Document'
+
+builder_registry.register('Page', PageBuilder)
+builder_registry.register('Document', PageBuilder)
