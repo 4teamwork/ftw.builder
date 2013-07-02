@@ -4,6 +4,249 @@ ftw.builder
 Create Plone objects in tests with the
 `Builder Pattern <http://www.oodesign.com/builder-pattern.html>`_.
 
+The builder pattern simplifies constructing objects.
+In tests we often need to create Plone objects, sometimes a single object,
+sometimes a whole graph of objects.
+Using the builder pattern allows us to do this in a DRY way, so that we do not
+repeat this over and over.
+
+.. code:: python
+
+    from ftw.builder import create
+    from ftw.builder import Builder
+
+    def test_foo(self):
+        folder = create(Builder('Folder')
+                        .titled('My Folder')
+                        .in_state('published'))
+
+
+Installation
+------------
+
+Add ``ftw.builder`` as (test-) dependency to your package in ``setup.py``:
+
+.. code:: python
+
+    tests_require = [
+        'ftw.builder',
+        ]
+
+    setup(name='my.package',
+          tests_require=tests_require,
+          extras_require={'tests': tests_require})
+
+
+Usage
+-----
+
+Setup your testing layer to base on the ``BUILDER_LAYER``. The ``BUILDER_LAYER``
+handles the session management:
+
+.. code:: python
+
+    from ftw.builder.testing import BUILDER_LAYER
+
+    class MyPackageLayer(PloneSandboxLayer):
+
+        defaultBases = (PLONE_FIXTURE, BUILDER_LAYER)
+
+Use the builder for creating objects in your tests:
+
+.. code:: python
+
+
+    from ftw.builder import Builder
+    from ftw.builder import create
+    from my.package.testing import MY_PACKAGE_INTEGRATION_TESTING
+    from unittest2 import TestCase
+
+    class TestMyFeature(TestCase)
+
+        layer = MY_PACKAGE_INTEGRATION_TESTING
+
+        def test_folder_is_well_titled(self):
+            folder = create(Builder('Folder')
+                            .titled('My Folder')
+                            .in_state('published'))
+
+            self.assertEquals('My Folder', folder.Title())
+
+
+Session
+~~~~~~~
+
+The ``BuilderSession`` keeps configuration for multiple builders. It is set up
+and destroyed by the ``BUILDER_LAYER`` and can be configured or replaced by a
+custom session with ``set_builder_session_factory``.
+
+Auto commit
++++++++++++
+
+When having a functional testing layer (``plone.app.testing.FunctionalTesting``)
+and doing browser tests it is necessary that the new objects are committed in
+the ZODB. When using a ``IntegrationTesting`` on the other hand it is essential
+that nothing is comitted, since this would break test isolation.
+
+The session provides the ``auto_commit`` option (dislabed by default), which
+commits to the ZODB after creating an object. Since it is disabled by default
+you need to enable it in functional test cases.
+
+For enabling the auto-commit feature in functional tests you can use
+``set_builder_session_factory``. Make sure to also base your fixture on the
+``BUILDER_LAYER`` fixture:
+
+.. code:: python
+
+    from ftw.builder.session import BuilderSession
+    from ftw.builder.testing import BUILDER_LAYER
+    from ftw.builder.testing import set_builder_session_factory
+    from plone.app.testing import FunctionalTesting
+    from plone.app.testing import IntegrationTesting
+    from plone.app.testing import PLONE_FIXTURE
+    from plone.app.testing import PloneSandboxLayer
+
+
+    def functional_session_factory():
+        sess = BuilderSession()
+        sess.auto_commit = True
+        return sess
+
+
+    class MyPackageLayer(PloneSandboxLayer):
+        defaultBases = (PLONE_FIXTURE, BUILDER_LAYER)
+
+    MY_PACKAGE_FIXTURE = MyPackageLayer()
+
+    MY_PACKAGE_INTEGRATION_TESTING = IntegrationTesting(
+        bases=(MY_PACKAGE_FIXTURE, ),
+        name="MyPackage:Integration")
+
+    MY_PACKAGE_FUNCTIONAL_TESTING = FunctionalTesting(
+        bases=(MY_PACKAGE_FIXTURE,
+               set_builder_session_factory(functional_session_factory)),
+        name="MyPackage:Integration")
+
+
+Plone object builders
+~~~~~~~~~~~~~~~~~~~~~
+
+For creating Plone objects (Archetypes or Dexterity) there are some methods for
+setting basic options:
+
+- ``within(container)`` - tell the builder where to create the object
+- ``titled(title)`` - name the object
+- ``having(field=value)`` - set the value of any field on the object
+- ``in_state(review_state)`` - set the object into any review state of the workflow
+  configured for this type
+
+
+
+Default builders
+~~~~~~~~~~~~~~~~
+
+The ``ftw.builder`` ships with some builders for some default Plone (Archetypes)
+content types, but the idea is that you can easily craft your own builders for
+your types or extend existing builders.
+
+The built-in builders are:
+
+- ``Folder`` - creates an Archetypes folder
+- ``Page`` (or ``Document``) - creates an Archetypes page (alias Document)
+- ``File`` - creates a File
+
+Attaching files
++++++++++++++++
+
+The default Archetypes file builder let's you attach a file or create the file
+with dummy content:
+
+.. code:: python
+
+    file1 = create(Builder('File')
+                   .with_dummy_content())
+
+    file2 = create(Builder('File')
+                   .attach_file_containing('File content', name='filename.pdf')
+
+
+Creating new builders
+~~~~~~~~~~~~~~~~~~~~~
+
+The idea is that you create your own builders for your application.
+This might be builers creating a single Plone object (Archetypes or Dexterity)
+or builders creating a set of objects using other builders.
+
+Creating Archetypes builders
+++++++++++++++++++++++++++++
+
+Use the ``ArchetypesBuilder`` base class for creating new Archetypes builders.
+Set the ``portal_type`` and your own methods.
+
+.. code:: python
+
+    from ftw.builder.archetypes import ArchetypesBuilder
+    from ftw.builder import builder_registry
+
+    class NewsBuilder(ArchetypesBuilder):
+        portal_type = 'News Item'
+
+        def containing(self, text):
+            self.arguments['text'] = text
+            return self
+
+    builder_registry.register('News', NewsBuilder)
+
+
+Creating Dexterity builders
++++++++++++++++++++++++++++
+
+XXX to be written
+
+
+Events
+++++++
+
+You can do things before and after creating the object:
+
+.. code:: python
+
+    class MyBuilder(ArchetypesBuilder):
+
+        def before_create(self):
+            super(NewsBuilder, self).before_create()
+            do_something()
+
+        def after_create(self):
+            do_something()
+            super(NewsBuilder, self).after_create()
+
+
+Overriding existing builders
+++++++++++++++++++++++++++++
+
+Sometimes it is necessary to override an existing builder.
+For re-registering an existing builder you can use
+the ``force`` flag:
+
+.. code:: python
+
+    builder_registry.register('File', CustomFileBuilder, force=True)
+
+
+Development / Tests
+-------------------
+
+.. code:: bash
+
+    $ git clone https://github.com/4teamwork/ftw.builder.git
+    $ cd ftw.builder
+    $ ln -s development.cfg buildout.cfg
+    $ python2.7 bootstrap.py
+    $ ./bin/buildout
+    $ ./bin/test
+
+
 
 Links
 -----
