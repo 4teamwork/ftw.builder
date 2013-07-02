@@ -1,6 +1,6 @@
 from Acquisition import aq_base
 from Products.CMFCore.utils import getToolByName
-from ftw.builder import builder_registry
+from ftw.builder import registry
 from ftw.builder import session
 from zope.component.hooks import getSite
 import transaction
@@ -15,7 +15,7 @@ def Builder(name):
         raise Exception('There is no builder session - you need to use the '
                         'BUILDER_LAYER as bases of your layer.')
 
-    builder_klass = builder_registry.get(name)
+    builder_klass = registry.builder_registry.get(name)
     return builder_klass(session.current_session)
 
 
