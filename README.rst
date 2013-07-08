@@ -201,7 +201,20 @@ Set the ``portal_type`` and your own methods.
 Creating Dexterity builders
 +++++++++++++++++++++++++++
 
-XXX to be written
+Use the ``DexterityBuilder`` base class for creating new Dexterity builders.
+Set the ``portal_type`` and your own methods.
+
+.. code:: python
+
+    from ftw.builder.dexterity import DexterityBuilder
+    from ftw.builder import builder_registry
+
+    class DocumentBuilder(DexterityBuilder):
+        portal_type = 'dexterity.document'
+
+        def with_dummy_content(self):
+            self.arguments["file"] = NamedBlobFile(data='Test data', filename='test.doc')
+            return self
 
 
 Events
