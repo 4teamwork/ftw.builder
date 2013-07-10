@@ -16,7 +16,7 @@ repeat this over and over.
     from ftw.builder import Builder
 
     def test_foo(self):
-        folder = create(Builder('Folder')
+        folder = create(Builder('folder')
                         .titled('My Folder')
                         .in_state('published'))
 
@@ -66,7 +66,7 @@ Use the builder for creating objects in your tests:
         layer = MY_PACKAGE_INTEGRATION_TESTING
 
         def test_folder_is_well_titled(self):
-            folder = create(Builder('Folder')
+            folder = create(Builder('folder')
                             .titled('My Folder')
                             .in_state('published'))
 
@@ -151,9 +151,9 @@ your types or extend existing builders.
 
 The built-in builders are:
 
-- ``Folder`` - creates an Archetypes folder
-- ``Page`` (or ``Document``) - creates an Archetypes page (alias Document)
-- ``File`` - creates a File
+- ``folder`` - creates an Archetypes folder
+- ``page`` (or ``Document``) - creates an Archetypes page (alias Document)
+- ``file`` - creates a File
 
 Attaching files
 +++++++++++++++
@@ -163,10 +163,10 @@ with dummy content:
 
 .. code:: python
 
-    file1 = create(Builder('File')
+    file1 = create(Builder('file')
                    .with_dummy_content())
 
-    file2 = create(Builder('File')
+    file2 = create(Builder('file')
                    .attach_file_containing('File content', name='filename.pdf')
 
 
@@ -195,7 +195,7 @@ Set the ``portal_type`` and your own methods.
             self.arguments['text'] = text
             return self
 
-    builder_registry.register('News', NewsBuilder)
+    builder_registry.register('news', NewsBuilder)
 
 
 Creating Dexterity builders
@@ -244,7 +244,7 @@ the ``force`` flag:
 
 .. code:: python
 
-    builder_registry.register('File', CustomFileBuilder, force=True)
+    builder_registry.register('file', CustomFileBuilder, force=True)
 
 
 Development / Tests
