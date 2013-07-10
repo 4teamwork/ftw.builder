@@ -70,7 +70,9 @@ class PloneObjectBuilder(object):
                     self.portal_type, chain))
 
         wftool.setStatusOf(chain[0], obj, {
-                'review_state': self.review_state})
+                'review_state': self.review_state,
+                'action': '',
+                'actor': ''})
 
         for workflow_id in chain:
             workflow = wftool.get(workflow_id)
