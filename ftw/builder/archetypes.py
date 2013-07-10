@@ -37,15 +37,15 @@ class FolderBuilder(ArchetypesBuilder):
 
     portal_type = 'Folder'
 
-builder_registry.register('Folder', FolderBuilder)
+builder_registry.register('folder', FolderBuilder)
 
 
 class PageBuilder(ArchetypesBuilder):
 
     portal_type = 'Document'
 
-builder_registry.register('Page', PageBuilder)
-builder_registry.register('Document', PageBuilder)
+builder_registry.register('page', PageBuilder)
+builder_registry.register('document', PageBuilder)
 
 
 class FileBuilder(ArchetypesBuilder):
@@ -66,4 +66,4 @@ class FileBuilder(ArchetypesBuilder):
         self.attach_file_containing("Test data")
         return self
 
-builder_registry.register('File', FileBuilder)
+builder_registry.register('file', FileBuilder)
