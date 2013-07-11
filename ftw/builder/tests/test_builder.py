@@ -33,7 +33,29 @@ class TestCreatingObjects(IntegrationTestCase):
         self.assertEquals('published',
                           api.content.get_state(published_folder))
 
+    def test_changing_workflow_state_reindexes_object_security(self):
+        self.set_workflow_chain('Folder', 'simple_publication_workflow')
+
+        normal_folder = create(Builder('folder'))
+        self.assertNotIn(
+            'Anonymous',
+            self.get_allowed_roles_and_users_for(normal_folder))
+
+        published_folder = create(Builder('folder')
+                                  .in_state('published'))
+        self.assertEquals(
+            ['Anonymous'],
+            self.get_allowed_roles_and_users_for(published_folder))
+
+
     def set_workflow_chain(self, for_type, to_workflow):
         wftool = getToolByName(self.portal, 'portal_workflow')
         wftool.setChainForPortalTypes((for_type,),
                                       (to_workflow,))
+
+    def get_allowed_roles_and_users_for(self, obj):
+        catalog = getToolByName(self.portal, 'portal_catalog')
+        path = '/'.join(obj.getPhysicalPath())
+        rid = catalog.getrid(path)
+        index_data = catalog.getIndexDataForRID(rid)
+        return index_data.get('allowedRolesAndUsers')
