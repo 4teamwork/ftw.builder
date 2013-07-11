@@ -78,3 +78,5 @@ class PloneObjectBuilder(object):
             workflow = wftool.get(workflow_id)
             if hasattr(aq_base(workflow), 'updateRoleMappingsFor'):
                 workflow.updateRoleMappingsFor(obj)
+
+        obj.reindexObjectSecurity()
