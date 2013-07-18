@@ -40,8 +40,19 @@ Add ``ftw.builder`` as (test-) dependency to your package in ``setup.py``:
 Usage
 -----
 
-Setup your testing layer to base on the ``BUILDER_LAYER``. The ``BUILDER_LAYER``
-handles the session management:
+Setup builder session in your testcase
+
+.. code:: python
+
+    class TestPerson(unittest2.TestCase):
+
+        def setUp(self):
+            session.current_session = session.factory()
+
+        def tearDown(self):
+            session.current_session = None
+
+In plone projects you can use the ``BUILDER_LAYER`` which your testing layer should base on. So the the session management is handled by the ``BUILDER_LAYER``:
 
 .. code:: python
 
@@ -176,6 +187,47 @@ Creating new builders
 The idea is that you create your own builders for your application.
 This might be builers creating a single Plone object (Archetypes or Dexterity)
 or builders creating a set of objects using other builders.
+
+Creating python builders
+++++++++++++++++++++++++
+
+Define a simpe builder class for your python object and register them in the builder registry
+
+.. code:: python
+
+    class PersonBuilder(object):
+
+        def __init__(self, session):
+            self.session = session
+            self.children_names = []
+            self.arguments = {}
+
+        def of_age(self):
+            self.arguments['age'] = 18
+            return self
+
+        def with_children(self, children_names):
+            self.children_names = children_names
+            return self
+
+        def having(self, **kwargs):
+            self.arguments.update(kwargs)
+            return self
+
+        def create(self, **kwargs):
+            person = Person(
+                self.arguments.get('name'),
+                self.arguments.get('age'))
+
+            for name in self.children_names:
+                person.add_child(
+                    create(Builder('person').having(name=name, age=5))
+                )
+
+            return person
+
+    builder_registry.register('person', PersonBuilder)
+
 
 Creating Archetypes builders
 ++++++++++++++++++++++++++++
