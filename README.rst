@@ -185,7 +185,7 @@ Creating new builders
 ~~~~~~~~~~~~~~~~~~~~~
 
 The idea is that you create your own builders for your application.
-This might be builers creating a single Plone object (Archetypes or Dexterity)
+This might be builders creating a single Plone object (Archetypes or Dexterity)
 or builders creating a set of objects using other builders.
 
 Creating python builders
