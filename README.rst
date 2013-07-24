@@ -103,25 +103,31 @@ The session provides the ``auto_commit`` option (dislabed by default), which
 commits to the ZODB after creating an object. Since it is disabled by default
 you need to enable it in functional test cases.
 
-For enabling the auto-commit feature in functional tests you can use
-``set_builder_session_factory``. Make sure to also base your fixture on the
+A default session factory ``functional_session_factory`` that enables the
+auto-commit feature is provided:
+
+.. code:: python
+
+    def functional_session_factory():
+        sess = BuilderSession()
+        sess.auto_commit = True
+        return sess  
+
+
+You can use ``set_builder_session_factory`` to replace the default session
+factory in functional tests. Make sure to also base your fixture on the
 ``BUILDER_LAYER`` fixture:
 
 .. code:: python
 
     from ftw.builder.session import BuilderSession
     from ftw.builder.testing import BUILDER_LAYER
+    from ftw.builder.testing import functional_session_factory
     from ftw.builder.testing import set_builder_session_factory
     from plone.app.testing import FunctionalTesting
     from plone.app.testing import IntegrationTesting
     from plone.app.testing import PLONE_FIXTURE
     from plone.app.testing import PloneSandboxLayer
-
-
-    def functional_session_factory():
-        sess = BuilderSession()
-        sess.auto_commit = True
-        return sess
 
 
     class MyPackageLayer(PloneSandboxLayer):
@@ -137,6 +143,9 @@ For enabling the auto-commit feature in functional tests you can use
         bases=(MY_PACKAGE_FIXTURE,
                set_builder_session_factory(functional_session_factory)),
         name="MyPackage:Integration")
+        
+        
+      
 
 
 Plone object builders
