@@ -80,3 +80,4 @@ class PloneObjectBuilder(object):
                 workflow.updateRoleMappingsFor(obj)
 
         obj.reindexObjectSecurity()
+        obj.reindexObject(idxs=['review_state'])
