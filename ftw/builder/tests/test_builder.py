@@ -7,6 +7,18 @@ from ftw.builder.tests import IntegrationTestCase
 from plone import api
 
 
+def obj2brain(obj):
+    catalog = getToolByName(obj, 'portal_catalog')
+    query = {'path':
+             {'query': '/'.join(obj.getPhysicalPath()),
+              'depth': 0}}
+    brains = catalog(query)
+    if len(brains) == 0:
+        raise Exception('Not in catalog: %s' % obj)
+    else:
+        return brains[0]
+
+
 class TestCreatingObjects(IntegrationTestCase):
 
     def test_default_container_is_plone_site(self):
@@ -47,6 +59,19 @@ class TestCreatingObjects(IntegrationTestCase):
             ['Anonymous'],
             self.get_allowed_roles_and_users_for(published_folder))
 
+    def test_changing_workflow_state_updates_also_the_brain(self):
+        self.set_workflow_chain('Folder', 'simple_publication_workflow')
+
+        normal_folder = create(Builder('folder'))
+        self.assertNotIn(
+            'Anonymous',
+            self.get_allowed_roles_and_users_for(normal_folder))
+
+        published_folder = create(Builder('folder')
+                                  .in_state('published'))
+
+        self.assertEquals('published',
+                          obj2brain(published_folder).review_state)
 
     def set_workflow_chain(self, for_type, to_workflow):
         wftool = getToolByName(self.portal, 'portal_workflow')
