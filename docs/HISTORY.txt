@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.0.0 (unreleased)
+1.0.0 (2013-08-12)
 ------------------
 
 - Added dexterity support.
