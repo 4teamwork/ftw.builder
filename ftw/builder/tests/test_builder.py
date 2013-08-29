@@ -1,5 +1,6 @@
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from DateTime import DateTime
 from Products.CMFCore.utils import getToolByName
 from ftw.builder import Builder
 from ftw.builder import create
@@ -72,6 +73,15 @@ class TestCreatingObjects(IntegrationTestCase):
 
         self.assertEquals('published',
                           obj2brain(published_folder).review_state)
+
+    def test_with_modification_date_updates_obj_and_brain(self):
+        modified = DateTime(2013, 1, 1)
+
+        folder = create(Builder('folder')
+                        .with_modification_date(modified))
+
+        self.assertEquals(modified, folder.modified())
+        self.assertEquals(modified, obj2brain(folder).modified)
 
     def set_workflow_chain(self, for_type, to_workflow):
         wftool = getToolByName(self.portal, 'portal_workflow')
