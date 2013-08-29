@@ -26,6 +26,7 @@ class PloneObjectBuilder(object):
         self.container = getSite()
         self.arguments = {}
         self.review_state = None
+        self.modification_date = None
 
     def within(self, container):
         self.container = container
@@ -43,6 +44,10 @@ class PloneObjectBuilder(object):
         self.review_state = review_state
         return self
 
+    def with_modification_date(self, modification_date):
+        self.modification_date = modification_date
+        return self
+
     def create(self, **kwargs):
         self.before_create()
         obj = self.create_object(**kwargs)
@@ -54,6 +59,10 @@ class PloneObjectBuilder(object):
 
     def after_create(self, obj):
         self.change_workflow_state(obj)
+
+        if self.modification_date:
+            self.set_modification_date(obj)
+
         if self.session.auto_commit:
             transaction.commit()
 
@@ -81,3 +90,8 @@ class PloneObjectBuilder(object):
 
         obj.reindexObjectSecurity()
         obj.reindexObject(idxs=['review_state'])
+
+    def set_modification_date(self, obj):
+        obj.setModificationDate(
+            modification_date=self.modification_date)
+        obj.reindexObject(idxs=['modified'])
