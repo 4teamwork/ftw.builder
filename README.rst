@@ -223,6 +223,21 @@ You can also configure all the other necessary things:
     hugo.getRolesInContext(folder) == ['Contributor', 'Authenticated', 'Editor']
 
 
+Groups builder
+++++++++++++++
+
+The "group" bilder helps you create groups:
+
+.. code:: python
+
+    user = create(Builder('user'))
+    group = create(Builder('group')
+                   .titled('Administrators')
+                   .with_roles('Site Administrator')
+                   .with_members(user))
+
+
+
 Creating new builders
 ~~~~~~~~~~~~~~~~~~~~~
 
