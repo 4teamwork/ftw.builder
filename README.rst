@@ -21,6 +21,8 @@ repeat this over and over.
                         .in_state('published'))
 
 
+.. contents:: Table of Contents
+
 Installation
 ------------
 
@@ -111,7 +113,7 @@ auto-commit feature is provided:
     def functional_session_factory():
         sess = BuilderSession()
         sess.auto_commit = True
-        return sess  
+        return sess
 
 
 You can use ``set_builder_session_factory`` to replace the default session
@@ -143,9 +145,7 @@ factory in functional tests. Make sure to also base your fixture on the
         bases=(MY_PACKAGE_FIXTURE,
                set_builder_session_factory(functional_session_factory)),
         name="MyPackage:Integration")
-        
-        
-      
+
 
 
 Plone object builders
@@ -190,12 +190,61 @@ with dummy content:
                    .attach_file_containing('File content', name='filename.pdf')
 
 
+Users builder
++++++++++++++
+
+There is a "user" builder registered by default.
+
+By default the user is named John Doe:
+
+.. code:: python
+
+    john = create(Builder('user'))
+    john.getId() == "john.doe"
+    john.getProperty('fullname') == "Doe John"
+    john.getProperty('email') == "john@doe.com"
+    john.getRoles() == ['Member', 'Authenticated']
+
+Changing the name of the user changes also the userid and the email address.
+You can also configure all the other necessary things:
+
+.. code:: python
+
+    folder = create(Builder('folder'))
+    hugo = create(Builder('user')
+                  .named('Hugo', 'Boss')
+                  .with_roles('Contributor')
+                  .with_roles('Editor', on=folder))
+
+    hugo.getId() == 'hugo.boss'
+    hugo.getProperty('fullname') == 'Boss Hugo'
+    hugo.getProperty('email') == 'hugo@boss.com'
+    hugo.getRoles() == ['Contributor', 'Authenticated']
+    hugo.getRolesInContext(folder) == ['Contributor', 'Authenticated', 'Editor']
+
+
+Groups builder
+++++++++++++++
+
+The "group" bilder helps you create groups:
+
+.. code:: python
+
+    user = create(Builder('user'))
+    group = create(Builder('group')
+                   .titled('Administrators')
+                   .with_roles('Site Administrator')
+                   .with_members(user))
+
+
+
 Creating new builders
 ~~~~~~~~~~~~~~~~~~~~~
 
 The idea is that you create your own builders for your application.
 This might be builders creating a single Plone object (Archetypes or Dexterity)
 or builders creating a set of objects using other builders.
+
 
 Creating python builders
 ++++++++++++++++++++++++
@@ -319,7 +368,6 @@ Development / Tests
     $ python2.7 bootstrap.py
     $ ./bin/buildout
     $ ./bin/test
-
 
 
 Links
