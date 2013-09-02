@@ -5,6 +5,12 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
+- Add groups builder.
+  [jone]
+
+- Add users builder.
+  [jone]
+
 - Added modification date setter for PloneObject Builders.
   [phgross]
 
