@@ -4,7 +4,7 @@ from plone.i18n.normalizer.interfaces import IIDNormalizer
 from zope.component import getUtility
 from zope.component.hooks import getSite
 import transaction
-
+from ftw.builder.utils import strip_diacricits
 
 import pkg_resources
 try:
@@ -94,9 +94,8 @@ class UserBuilder(object):
 
     def update_email(self, firstname, lastname):
         if not self.properties.get('email', None):
-            normalizer = getUtility(IIDNormalizer)
-            firstname = normalizer.normalize(firstname)
-            lastname = normalizer.normalize(lastname)
+            firstname = self.normalize_name_for_email(firstname)
+            lastname = self.normalize_name_for_email(lastname)
             email = '%s@%s.com' % (firstname, lastname)
             self.properties['email'] = email
 
@@ -109,5 +108,10 @@ class UserBuilder(object):
 
         if not self.properties.get('username', None):
             self.properties['username'] = self.userid
+
+    def normalize_name_for_email(self, name):
+        name = name.lower()
+        name = name.replace(' ', '-')
+        return strip_diacricits(name)
 
 builder_registry.register('user', UserBuilder)

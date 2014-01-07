@@ -39,7 +39,7 @@ class TestUserBuilder(IntegrationTestCase):
         self.assertTrue(mtool.getMemberById('hugo.boss'))
 
     def test_generated_mail_address_is_normalized(self):
-        user = create(Builder('user').named('Hans Peter', 'Linder'))
+        user = create(Builder('user').named('H\xc3\xa4ns Peter', 'Linder'))
         self.assertEquals('hans-peter@linder.com', user.getProperty('email'))
 
     def test_changing_userid(self):
