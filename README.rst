@@ -159,6 +159,7 @@ setting basic options:
 - ``having(field=value)`` - set the value of any field on the object
 - ``in_state(review_state)`` - set the object into any review state of the workflow
   configured for this type
+- ``providing(interface1, interface2, ...)`` - let the object provide interfaces
 
 
 

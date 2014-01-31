@@ -1,6 +1,11 @@
 from ftw.builder import Builder
 from ftw.builder import create
 from ftw.builder.tests import IntegrationTestCase
+from zope.interface import Interface
+
+
+class IFoo(Interface):
+    pass
 
 
 class TestArchetypesBuilder(IntegrationTestCase):
@@ -25,6 +30,10 @@ class TestArchetypesBuilder(IntegrationTestCase):
     def test_object_id_can_be_set(self):
         folder = create(Builder('folder').with_id('bar'))
         self.assertEqual('bar', folder.getId())
+
+    def test_object_providing_interface(self):
+        folder = create(Builder('folder').providing(IFoo))
+        self.assertTrue(IFoo.providedBy(folder))
 
 
 class TestATFolderBuilder(IntegrationTestCase):
