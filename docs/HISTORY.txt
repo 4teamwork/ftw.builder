@@ -5,6 +5,10 @@ Changelog
 1.1.1 (unreleased)
 ------------------
 
+- Add `providing()` method to Plone builder,
+  letting the object provide interfaces.
+  [jone]
+
 - Don't use IDNormalizer for Mail. It handles Umlauts weird.
   [tschanzt]
 

@@ -3,6 +3,7 @@ from Products.CMFCore.utils import getToolByName
 from ftw.builder import registry
 from ftw.builder import session
 from zope.component.hooks import getSite
+from zope.interface import alsoProvides
 import transaction
 
 
@@ -27,6 +28,7 @@ class PloneObjectBuilder(object):
         self.arguments = {}
         self.review_state = None
         self.modification_date = None
+        self.interfaces = []
 
     def within(self, container):
         self.container = container
@@ -48,6 +50,10 @@ class PloneObjectBuilder(object):
         self.modification_date = modification_date
         return self
 
+    def providing(self, *interfaces):
+        self.interfaces.extend(interfaces)
+        return self
+
     def create(self, **kwargs):
         self.before_create()
         obj = self.create_object(**kwargs)
@@ -58,6 +64,7 @@ class PloneObjectBuilder(object):
         pass
 
     def after_create(self, obj):
+        alsoProvides(obj, *self.interfaces)
         self.change_workflow_state(obj)
 
         if self.modification_date:

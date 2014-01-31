@@ -19,6 +19,10 @@ from zope.lifecycleevent.interfaces import IObjectAddedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 
 
+class IFoo(Interface):
+    pass
+
+
 class IBookSchema(Interface):
     title = schema.TextLine(
         title=u'Title',
@@ -118,6 +122,10 @@ class TestDexterityBuilder(DexterityBaseTestCase):
 
         self.assertEquals(u'hugo.boss', book.author)
         self.assertEquals((u'hugo.boss', ), book.listCreators())
+
+    def test_object_providing_interface(self):
+        book = create(Builder('book').providing(IFoo))
+        self.assertTrue(IFoo.providedBy(book))
 
 
 @adapter(IObjectCreatedEvent)
