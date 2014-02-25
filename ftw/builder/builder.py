@@ -27,6 +27,8 @@ class PloneObjectBuilder(object):
         self.container = getSite()
         self.arguments = {}
         self.review_state = None
+        self.effective_date = None
+        self.expiration_date = None
         self.modification_date = None
         self.interfaces = []
 
@@ -44,6 +46,14 @@ class PloneObjectBuilder(object):
 
     def in_state(self, review_state):
         self.review_state = review_state
+        return self
+
+    def with_effective_date(self, effective_date):
+        self.effective_date = effective_date
+        return self
+
+    def with_expiration_date(self, epiration_date):
+        self.expiration_date = epiration_date
         return self
 
     def with_modification_date(self, modification_date):
@@ -66,6 +76,12 @@ class PloneObjectBuilder(object):
     def after_create(self, obj):
         alsoProvides(obj, *self.interfaces)
         self.change_workflow_state(obj)
+
+        if self.effective_date:
+            self.set_effective_date(obj)
+
+        if self.expiration_date:
+            self.set_expiration_date(obj)
 
         if self.modification_date:
             self.set_modification_date(obj)
@@ -97,6 +113,14 @@ class PloneObjectBuilder(object):
 
         obj.reindexObjectSecurity()
         obj.reindexObject(idxs=['review_state'])
+
+    def set_effective_date(self, obj):
+        obj.setEffectiveDate(self.effective_date)
+        obj.reindexObject(idxs=['effective'])
+
+    def set_expiration_date(self, obj):
+        obj.setExpirationDate(self.expiration_date)
+        obj.reindexObject(idxs=['expires'])
 
     def set_modification_date(self, obj):
         obj.setModificationDate(

@@ -5,7 +5,9 @@ Changelog
 1.2.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add methods to set expiration date and effective
+  date to Plone builder.
+  [deif]
 
 
 1.2.0 (2014-01-31)
