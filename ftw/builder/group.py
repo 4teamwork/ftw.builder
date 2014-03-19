@@ -15,6 +15,7 @@ class GroupBuilder(object):
         self.groupid = None
         self.roles = ()
         self.members = []
+        self.local_roles = {}
 
     def titled(self, title):
         return self.having(title=title)
@@ -23,8 +24,12 @@ class GroupBuilder(object):
         self.groupid = groupid
         return self
 
-    def with_roles(self, *roles):
-        self.roles = tuple(roles)
+    def with_roles(self, *roles, **kwargs):
+        context = kwargs.get('on', None)
+        if context is None:
+            self.roles = tuple(roles)
+        else:
+            self.local_roles[context] = roles
         return self
 
     def with_members(self, *members):
@@ -45,6 +50,7 @@ class GroupBuilder(object):
     def create_group(self, groupid, roles, properties):
         portal_groups = getToolByName(self.portal, 'portal_groups')
         portal_groups.addGroup(groupid, roles=roles, properties=properties)
+        self.set_roles(groupid)
         return portal_groups.getGroupById(self.groupid)
 
     def add_members(self, group):
@@ -71,6 +77,10 @@ class GroupBuilder(object):
         title = self.properties.get('title')
         normalizer = getUtility(IIDNormalizer)
         self.groupid = normalizer.normalize(title)
+
+    def set_roles(self, groupid):
+        for context, roles in self.local_roles.items():
+            context.manage_setLocalRoles(groupid, tuple(roles))
 
 
 builder_registry.register('group', GroupBuilder)

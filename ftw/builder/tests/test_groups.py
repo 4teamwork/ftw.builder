@@ -5,10 +5,6 @@ from ftw.builder.tests import IntegrationTestCase
 
 class TestUserBuilder(IntegrationTestCase):
 
-    def setUp(self):
-        self.portal = self.layer['portal']
-        self.request = self.layer['request']
-
     def test_group_name_is_normalized_by_title(self):
         group = create(Builder('group').titled('Masters of Disaster'))
         self.assertEquals('masters-of-disaster', group.getId())
@@ -24,8 +20,9 @@ class TestUserBuilder(IntegrationTestCase):
     def test_either_userid_or_title_needs_to_be_defined(self):
         with self.assertRaises(AssertionError) as cm:
             create(Builder('group'))
-        self.assertEquals('Cannot create group: no group title (or id) defined.',
-                          str(cm.exception))
+        self.assertEquals(
+            'Cannot create group: no group title (or id) defined.',
+            str(cm.exception))
 
         self.assertTrue(create(Builder('group').with_groupid('foo')))
         self.assertTrue(create(Builder('group').titled('Bar')))
@@ -36,6 +33,14 @@ class TestUserBuilder(IntegrationTestCase):
                        .with_roles('Editor', 'Contributor'))
         self.assertEquals(set(['Authenticated', 'Editor', 'Contributor']),
                           set(group.getRoles()))
+
+    def test_create_group_with_local_roles(self):
+        folder = create(Builder('folder'))
+        group = create(Builder('group')
+                       .titled('Something')
+                       .with_roles('Editor', 'Contributor', on=folder))
+        self.assertIn((group.getId(), ('Editor', 'Contributor')),
+                      folder.get_local_roles())
 
     def test_create_group_with_participants(self):
         user = create(Builder('user'))
