@@ -231,10 +231,12 @@ The "group" bilder helps you create groups:
 
 .. code:: python
 
+    folder = create(Builder('folder'))
     user = create(Builder('user'))
     group = create(Builder('group')
                    .titled('Administrators')
                    .with_roles('Site Administrator')
+                   .with_roles('Editor', on=folder)
                    .with_members(user))
 
 
