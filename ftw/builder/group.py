@@ -81,6 +81,7 @@ class GroupBuilder(object):
     def set_roles(self, groupid):
         for context, roles in self.local_roles.items():
             context.manage_setLocalRoles(groupid, tuple(roles))
+            context.reindexObjectSecurity()
 
 
 builder_registry.register('group', GroupBuilder)
