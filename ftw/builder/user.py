@@ -1,10 +1,10 @@
-from Products.CMFCore.utils import getToolByName
 from ftw.builder import builder_registry
+from ftw.builder.utils import strip_diacricits
 from plone.i18n.normalizer.interfaces import IIDNormalizer
+from Products.CMFCore.utils import getToolByName
 from zope.component import getUtility
 from zope.component.hooks import getSite
 import transaction
-from ftw.builder.utils import strip_diacricits
 
 import pkg_resources
 try:
@@ -56,7 +56,10 @@ class UserBuilder(object):
 
     def create(self):
         self.before_create()
-        user = self.create_user(self.userid, self.password, self.roles, self.properties)
+        user = self.create_user(self.userid,
+                                self.password,
+                                self.roles,
+                                self.properties)
         self.after_create(user)
         return user
 
@@ -64,7 +67,7 @@ class UserBuilder(object):
         regtool = getToolByName(self.portal, 'portal_registration')
         mtool = getToolByName(self.portal, 'portal_membership')
         user = regtool.addMember(userid, password, (), properties=properties)
-        self.set_roles(userid, roles)
+        self.set_roles(user.getId(), roles)
         return mtool.getMemberById(userid)
 
     def set_roles(self, userid, roles):
@@ -73,6 +76,7 @@ class UserBuilder(object):
 
         for context, roles in self.local_roles.items():
             context.manage_setLocalRoles(userid, tuple(roles))
+            context.reindexObjectSecurity()
 
     def before_create(self):
         self.update_properties()

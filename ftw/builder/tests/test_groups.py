@@ -1,6 +1,7 @@
 from ftw.builder import Builder
 from ftw.builder import create
 from ftw.builder.tests import IntegrationTestCase
+from Products.CMFCore.utils import getToolByName
 
 
 class TestUserBuilder(IntegrationTestCase):
@@ -47,3 +48,17 @@ class TestUserBuilder(IntegrationTestCase):
         group = create(Builder('group').titled('Administrators')
                        .with_members(user.getUser()))
         self.assertEquals([user], group.getAllGroupMembers())
+
+    def test_security_indexes_are_up_to_date(self):
+        wftool = getToolByName(self.portal, 'portal_workflow')
+        wftool.setChainForPortalTypes(['Folder'],
+                                      'simple_publication_workflow')
+        folder = create(Builder('folder'))
+        group = create(Builder('group')
+                       .titled('group')
+                       .with_roles('Reader', on=folder))
+
+        catalog = getToolByName(self.portal, 'portal_catalog')
+        rid = catalog(path='/'.join(folder.getPhysicalPath()))[0].getRID()
+        self.assertIn('user:{0}'.format(group.getId()),
+                      catalog.getIndexDataForRID(rid)['allowedRolesAndUsers'])
