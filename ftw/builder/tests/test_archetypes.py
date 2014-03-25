@@ -81,3 +81,32 @@ class TestATFileBuilder(IntegrationTestCase):
 
             {'filename': file_.getFile().filename,
              'data': file_.getFile().data})
+
+
+class TestATImageBuilder(IntegrationTestCase):
+
+    def test_creates_an_image_object(self):
+        image = create(Builder('image'))
+        self.assertEquals('Image', image.portal_type)
+
+    def test_setting_image_data(self):
+        image = create(Builder('image')
+                       .attach_file_containing('IMG', 'foo.png'))
+
+        self.assertEquals(
+            {'filename': 'foo.png',
+             'data': 'IMG'},
+
+            {'filename': image.getFile().filename,
+             'data': image.getFile().data})
+
+    def test_dummy_content_can_be_attached(self):
+        image = create(Builder('image')
+                       .with_dummy_content())
+
+        self.assertEquals(
+            {'filename': 'image.png',
+             'data': 'PNG image dummy content'},
+
+            {'filename': image.getFile().filename,
+             'data': image.getFile().data})

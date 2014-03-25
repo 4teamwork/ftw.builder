@@ -5,6 +5,9 @@ Changelog
 1.2.1 (unreleased)
 ------------------
 
+- Implement ATImage builder.
+  [jone]
+
 - Reindex object security after setting local roles for a principal.
   [mathias.leimgruber]
 
