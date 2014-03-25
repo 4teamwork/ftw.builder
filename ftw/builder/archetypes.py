@@ -67,3 +67,17 @@ class FileBuilder(ArchetypesBuilder):
         return self
 
 builder_registry.register('file', FileBuilder)
+
+
+class ImageBuilder(FileBuilder):
+
+    portal_type = 'Image'
+
+    def attach_file_containing(self, content, name="image.png"):
+        return super(ImageBuilder, self) \
+            .attach_file_containing(content, name)
+
+    def with_dummy_content(self):
+        return self.attach_file_containing('PNG image dummy content')
+
+builder_registry.register('image', ImageBuilder)
