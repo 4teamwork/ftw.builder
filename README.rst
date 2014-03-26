@@ -175,12 +175,15 @@ The built-in builders are:
 - ``folder`` - creates an Archetypes folder
 - ``page`` (or ``Document``) - creates an Archetypes page (alias Document)
 - ``file`` - creates a File
+- ``image`` - creates an Archetypes Image
+
+
 
 Attaching files
 +++++++++++++++
 
 The default Archetypes file builder let's you attach a file or create the file
-with dummy content:
+with dummy content. The archetypes image builder provides a real image (1x1 px GIF):
 
 .. code:: python
 
@@ -189,6 +192,9 @@ with dummy content:
 
     file2 = create(Builder('file')
                    .attach_file_containing('File content', name='filename.pdf')
+
+    image1 = create(Builder('image')
+                   .with_dummy_content())
 
 
 Users builder

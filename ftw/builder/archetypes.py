@@ -73,11 +73,16 @@ class ImageBuilder(FileBuilder):
 
     portal_type = 'Image'
 
-    def attach_file_containing(self, content, name="image.png"):
+    def attach_file_containing(self, content, name="image.gif"):
         return super(ImageBuilder, self) \
             .attach_file_containing(content, name)
 
     def with_dummy_content(self):
-        return self.attach_file_containing('PNG image dummy content')
+        data = (
+            'GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\x00\x00'
+            '\x00!\xf9\x04\x04\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00'
+            '\x01\x00\x00\x02\x02D\x01\x00;')
+
+        return self.attach_file_containing(data)
 
 builder_registry.register('image', ImageBuilder)
