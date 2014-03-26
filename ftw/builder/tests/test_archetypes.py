@@ -12,13 +12,15 @@ class TestArchetypesBuilder(IntegrationTestCase):
 
     def test_unmarks_creation_flag_with_procjessForm_by_default(self):
         folder = create(Builder('folder'))
-        self.assertFalse(folder.checkCreationFlag(),
-                         'Creation flag should be False after creation by default.')
+        self.assertFalse(
+            folder.checkCreationFlag(),
+            'Creation flag should be False after creation by default.')
 
     def test_calling_processForm_can_be_disabled(self):
         folder = create(Builder('folder'), processForm=False)
-        self.assertTrue(folder.checkCreationFlag(),
-                        'Creation flag should be True when disabling processForm')
+        self.assertTrue(
+            folder.checkCreationFlag(),
+            'Creation flag should be True when disabling processForm')
 
     def test_object_id_is_chosen_from_title_automatically(self):
         folder1 = create(Builder('folder').titled('Foo'))
@@ -105,8 +107,22 @@ class TestATImageBuilder(IntegrationTestCase):
                        .with_dummy_content())
 
         self.assertEquals(
-            {'filename': 'image.png',
-             'data': 'PNG image dummy content'},
+            {'filename': 'image.gif',
+             'data': 'GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\x00\x00'
+                     '\x00!\xf9\x04\x04\x00\x00\x00\x00,\x00\x00\x00\x00\x01'
+                     '\x00\x01\x00\x00\x02\x02D\x01\x00;'},
 
             {'filename': image.getFile().filename,
              'data': image.getFile().data})
+
+    def test_dummy_content_is_a_real_image(self):
+        image = create(Builder('image')
+                       .with_dummy_content())
+
+        scale = image.restrictedTraverse('@@images')
+
+        self.assertIsNotNone(scale.scale('image',
+                                         width=100,
+                                         height=100,
+                                         direction='down'),
+                             'Could no scale the image.')
