@@ -1,3 +1,4 @@
+from DateTime import DateTime
 from datetime import datetime
 from ftw.builder import Builder
 from ftw.builder import create
@@ -108,7 +109,7 @@ class TestDexterityBuilder(DexterityBaseTestCase):
                      .having(title=u'Testtitle',
                              effective=datetime(2013, 1, 1)))
 
-        self.assertEquals(datetime(2013, 1, 1), book.effective)
+        self.assertEquals(DateTime(2013, 1, 1), book.effective())
 
     def test_initalizing_fields_with_missing_value(self):
         book = create(Builder('book')
