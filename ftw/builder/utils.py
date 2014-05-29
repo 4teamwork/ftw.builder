@@ -1,5 +1,6 @@
 import unicodedata
 
+
 def strip_diacricits(text):
     if isinstance(text, str):
         text = text.decode('utf-8')
