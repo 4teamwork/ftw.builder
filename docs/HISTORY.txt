@@ -5,7 +5,8 @@ Changelog
 1.3.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Update object_provides in catalog when using provides().
+  [jone]
 
 
 1.3.1 (2014-03-26)

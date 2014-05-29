@@ -1,3 +1,4 @@
+from Products.CMFCore.utils import getToolByName
 from ftw.builder import Builder
 from ftw.builder import create
 from ftw.builder.tests import IntegrationTestCase
@@ -36,6 +37,16 @@ class TestArchetypesBuilder(IntegrationTestCase):
     def test_object_providing_interface(self):
         folder = create(Builder('folder').providing(IFoo))
         self.assertTrue(IFoo.providedBy(folder))
+
+    def test_object_providing_interface_updates_catalog(self):
+        folder = create(Builder('folder').providing(IFoo))
+
+        catalog = getToolByName(folder, 'portal_catalog')
+        rid = catalog.getrid('/'.join(folder.getPhysicalPath()))
+        index_data = catalog.getIndexDataForRID(rid)
+
+        self.assertIn('ftw.builder.tests.test_archetypes.IFoo',
+                      index_data['object_provides'])
 
 
 class TestATFolderBuilder(IntegrationTestCase):

@@ -64,7 +64,10 @@ class PloneObjectBuilder(object):
         pass
 
     def after_create(self, obj):
-        alsoProvides(obj, *self.interfaces)
+        if self.interfaces:
+            alsoProvides(obj, *self.interfaces)
+            obj.reindexObject(idxs=['object_provides'])
+
         self.change_workflow_state(obj)
 
         if self.modification_date:
