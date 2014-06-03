@@ -5,9 +5,10 @@ Changelog
 1.3.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- DxBuilder: Make sure default values are set before adding content to container.
+  [lgraf]
 
-
+ 
 1.3.2 (2014-05-29)
 ------------------
 

@@ -1,3 +1,4 @@
+from Acquisition import aq_base
 from ftw.builder.builder import PloneObjectBuilder
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.utils import addContentToContainer
@@ -37,14 +38,20 @@ class DexterityBuilder(PloneObjectBuilder):
     def create_object(self):
         self.insert_field_default_values()
         content = createContent(self.portal_type, **self.arguments)
+
+        # Acquisition wrap content temporarily to make sure schema
+        # interfaces can be adapted to `content`
+        content = content.__of__(self.container)
         self.set_field_values(content)
+        self.set_missing_values_for_empty_fields(content)
+        # Remove temporary acquisition wrapper
+        content = aq_base(content)
 
         obj = addContentToContainer(
             self.container,
             content,
             checkConstraints=self.checkConstraints)
 
-        self.set_missing_values_for_empty_fields(obj)
         return obj
 
     def insert_field_default_values(self):
