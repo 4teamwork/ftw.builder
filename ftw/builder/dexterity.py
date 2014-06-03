@@ -74,8 +74,14 @@ class DexterityBuilder(PloneObjectBuilder):
             if field.required:
                 continue
 
-            if field.get(field.interface(obj)):
-                continue
+            try:
+                value = field.get(field.interface(obj))
+                if value:
+                    # Field is present, nothing to do
+                    continue
+            except AttributeError:
+                # Field is missing, go on and set default value
+                pass
 
             if name in self.arguments:
                 continue
