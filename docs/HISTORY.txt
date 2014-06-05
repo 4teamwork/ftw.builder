@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.3.3 (unreleased)
+1.3.3 (2014-06-05)
 ------------------
 
 - DxBuilder: Fix check if field is present (to determine if default values should be set).
