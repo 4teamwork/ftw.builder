@@ -5,7 +5,8 @@ Changelog
 1.3.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- DxBuilder: Fixed discriminators for default value adapter lookup.
+  [lgraf]
 
 
 1.3.3 (2014-06-05)

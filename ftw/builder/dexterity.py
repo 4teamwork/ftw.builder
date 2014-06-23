@@ -36,12 +36,12 @@ class DexterityBuilder(PloneObjectBuilder):
         return obj
 
     def create_object(self):
-        self.insert_field_default_values()
         content = createContent(self.portal_type, **self.arguments)
 
         # Acquisition wrap content temporarily to make sure schema
         # interfaces can be adapted to `content`
         content = content.__of__(self.container)
+        self.insert_field_default_values(content)
         self.set_field_values(content)
         self.set_missing_values_for_empty_fields(content)
         # Remove temporary acquisition wrapper
@@ -54,12 +54,12 @@ class DexterityBuilder(PloneObjectBuilder):
 
         return obj
 
-    def insert_field_default_values(self):
+    def insert_field_default_values(self, obj):
         for name, field in self.iter_fields():
             if name in self.arguments:
                 continue
 
-            default = self.get_default_value_for_field(field)
+            default = self.get_default_value_for_field(obj, field)
             if default:
                 self.arguments[name] = default
 
@@ -90,9 +90,9 @@ class DexterityBuilder(PloneObjectBuilder):
             if missing_value != none_marker:
                 field.set(field.interface(obj), missing_value)
 
-    def get_default_value_for_field(self, field):
+    def get_default_value_for_field(self, obj, field):
         default = queryMultiAdapter(
-            (self.container, self.container.REQUEST, None, field, None),
+            (obj, obj.REQUEST, None, field, None),
             IValue, name='default')
 
         if default is not None:
