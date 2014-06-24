@@ -5,6 +5,9 @@ Changelog
 1.3.4 (unreleased)
 ------------------
 
+- DxBuilder: Only determine default values *after* object has been added to container.
+  [lgraf]
+
 - DxBuilder: Fixed discriminators for default value adapter lookup.
   [lgraf]
 

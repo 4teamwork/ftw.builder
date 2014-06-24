@@ -41,7 +41,6 @@ class DexterityBuilder(PloneObjectBuilder):
         # Acquisition wrap content temporarily to make sure schema
         # interfaces can be adapted to `content`
         content = content.__of__(self.container)
-        self.insert_field_default_values(content)
         self.set_field_values(content)
         self.set_missing_values_for_empty_fields(content)
         # Remove temporary acquisition wrapper
@@ -51,6 +50,9 @@ class DexterityBuilder(PloneObjectBuilder):
             self.container,
             content,
             checkConstraints=self.checkConstraints)
+
+        self.insert_field_default_values(obj)
+        self.set_field_values(obj)
 
         return obj
 
