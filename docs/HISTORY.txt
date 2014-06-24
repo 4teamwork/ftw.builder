@@ -5,7 +5,8 @@ Changelog
 1.3.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- DxBuilder: Fix encoding problem when filling default value for "owners" field.
+  [jone]
 
 
 1.3.3 (2014-06-05)
@@ -17,7 +18,7 @@ Changelog
 - DxBuilder: Make sure default values are set before adding content to container.
   [lgraf]
 
- 
+
 1.3.2 (2014-05-29)
 ------------------
 

@@ -7,6 +7,8 @@ from ftw.builder.dexterity import DexterityBuilder
 from ftw.builder.testing import BUILDER_INTEGRATION_TESTING
 from plone.app.testing import login
 from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_NAME
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.dexterity.fti import DexterityFTI
 from unittest2 import TestCase
@@ -14,8 +16,8 @@ from zope import schema
 from zope.component import adapter
 from zope.component.globalregistry import getGlobalSiteManager
 from zope.component.hooks import getSite
-from zope.interface import Interface
 from zope.interface import alsoProvides
+from zope.interface import Interface
 from zope.lifecycleevent.interfaces import IObjectAddedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 
@@ -38,7 +40,7 @@ class IBookSchema(Interface):
     author = schema.TextLine(
         title=u'Author',
         required=False,
-        default=u'hugo.boss')
+        default=u'test_user_1_')
 
 
 alsoProvides(IBookSchema, IFormFieldProvider)
@@ -56,11 +58,8 @@ class DexterityBaseTestCase(TestCase):
         super(DexterityBaseTestCase, self).setUp()
         self.portal = self.layer['portal']
 
-        # create test user
-        pas = self.portal['acl_users']
-        pas.source_users.addUser(u'hugo.boss', u'Hugo Boss', 'secret')
-        setRoles(self.portal, u'hugo.boss', ['Manager'])
-        login(self.portal, u'Hugo Boss')
+        setRoles(self.portal, TEST_USER_ID, ['Contributor'])
+        login(self.portal, TEST_USER_NAME)
 
         # add test fti
         self.fti = DexterityFTI('Book')
@@ -121,8 +120,8 @@ class TestDexterityBuilder(DexterityBaseTestCase):
         book = create(Builder('book')
                      .having(title=u'Testtitle'))
 
-        self.assertEquals(u'hugo.boss', book.author)
-        self.assertEquals((u'hugo.boss', ), book.listCreators())
+        self.assertEquals(u'test_user_1_', book.author)
+        self.assertEquals((u'test_user_1_', ), book.listCreators())
 
     def test_object_providing_interface(self):
         book = create(Builder('book').providing(IFoo))

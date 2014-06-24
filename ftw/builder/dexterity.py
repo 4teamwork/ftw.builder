@@ -1,5 +1,7 @@
 from Acquisition import aq_base
 from ftw.builder.builder import PloneObjectBuilder
+from operator import methodcaller
+from plone.app.dexterity.behaviors.metadata import IOwnership
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.utils import addContentToContainer
 from plone.dexterity.utils import createContent
@@ -96,8 +98,15 @@ class DexterityBuilder(PloneObjectBuilder):
             IValue, name='default')
 
         if default is not None:
-            return default.get()
-        return getattr(field, 'default', None)
+            value =  default.get()
+        else:
+            value = getattr(field, 'default', None)
+
+        # The default value of the 'creators' field returns a tuple
+        # of strings instead of a tuple of unicodes.
+        if IOwnership['creators'] == field:
+            value = tuple(map(methodcaller('decode', 'utf8'), value))
+        return value
 
     def get_missing_value_for_field(self, field):
         try:
