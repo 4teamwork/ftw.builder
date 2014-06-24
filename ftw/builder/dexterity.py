@@ -52,9 +52,6 @@ class DexterityBuilder(PloneObjectBuilder):
             content,
             checkConstraints=self.checkConstraints)
 
-        self.insert_field_default_values(obj)
-        self.set_field_values(obj)
-
         return obj
 
     def insert_field_default_values(self):
