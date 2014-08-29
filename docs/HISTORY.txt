@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.3.4 (unreleased)
+1.3.4 (2014-08-29)
 ------------------
 
 - DxBuilder: Fix encoding problem when filling default value for "owners" field.
