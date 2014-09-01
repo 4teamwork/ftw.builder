@@ -104,7 +104,10 @@ class DexterityBuilder(PloneObjectBuilder):
 
         # The default value of the 'creators' field returns a tuple
         # of strings instead of a tuple of unicodes.
-        if IOwnership['creators'] == field:
+        # -----
+        # Because the field equality check is insufficient we need to check
+        # the field interface additionally.
+        if IOwnership['creators'] == field and field.interface == IOwnership:
             value = tuple(map(methodcaller('decode', 'utf8'), value))
         return value
 
