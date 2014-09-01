@@ -5,7 +5,8 @@ Changelog
 1.3.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fixed default value setter for different "owners" field.
+  [phgross]
 
 
 1.3.4 (2014-08-29)
