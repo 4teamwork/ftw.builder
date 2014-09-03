@@ -1,7 +1,8 @@
-from Products.CMFCore.utils import getToolByName
 from ftw.builder import Builder
 from ftw.builder import create
 from ftw.builder.tests import IntegrationTestCase
+from operator import methodcaller
+from Products.CMFCore.utils import getToolByName
 from zope.interface import Interface
 
 
@@ -137,3 +138,43 @@ class TestATImageBuilder(IntegrationTestCase):
                                          height=100,
                                          direction='down'),
                              'Could no scale the image.')
+
+
+class TestATCollectionBuilder(IntegrationTestCase):
+
+    def test_creating_collection_with_query(self):
+        create(Builder('page').titled('The Page'))
+
+        collection = create(Builder('collection')
+                            .titled('The Collection')
+                            .having(query=[{'i': 'Type',
+                                            'o': 'plone.app.querystring.operation.string.is',
+                                            'v': 'Collection'}]))
+
+        self.assertEquals(['The Collection'],
+                          map(methodcaller('Title'),
+                              collection.results()))
+
+    def test_creating_colleciton_from_query_with_string(self):
+        create(Builder('page').titled('The Page'))
+
+        collection = create(Builder('collection')
+                            .titled('The Collection')
+                            .from_query({'portal_type': 'Collection'}))
+
+        self.assertEquals(['The Collection'],
+                          map(methodcaller('Title'),
+                              collection.results()))
+
+    def test_creating_colleciton_from_query_with_list(self):
+        create(Builder('document').titled('The Page'))
+
+        collection = create(Builder('collection')
+                            .titled('The Collection')
+                            .from_query({'portal_type': ['Collection',
+                                                         'Document']}))
+
+        self.assertEquals(
+            sorted(['The Page', 'The Collection']),
+            sorted(map(methodcaller('Title'),
+                       collection.results())))

@@ -1,6 +1,6 @@
-from StringIO import StringIO
 from ftw.builder import builder_registry
 from ftw.builder.builder import PloneObjectBuilder
+from StringIO import StringIO
 from zope.container.interfaces import INameChooser
 
 
@@ -86,3 +86,58 @@ class ImageBuilder(FileBuilder):
         return self.attach_file_containing(data)
 
 builder_registry.register('image', ImageBuilder)
+
+
+class CollectionBuilder(ArchetypesBuilder):
+    portal_type = 'Collection'
+
+    def from_query(self, query):
+        """plone.app.collection collections use
+        plone.app.querystring, making it really hard to just set
+        a query.
+        This method tries to convert a catalog query into a
+        querystring-list so that it can be stored on the
+        collection.
+
+        However, it is very limited.
+        For complicated queries you'll need to create your own
+        querystring-list and set it with ``having``, e.g.:
+
+
+        >>> create(Builder('collection')
+        ...    .having(query=[{'i': 'Type',
+        ...                    'o': 'plone.app.querystring.operation.string.is',
+        ...                    'v': 'Collection'}]))
+        """
+
+        querystringthing = []
+
+        for name, value in query.items():
+            if isinstance(value, unicode):
+                value = value.encode('utf-8')
+
+            if isinstance(value, str):
+                querystringthing.append(
+                    {'i': name,
+                     'o': 'plone.app.querystring.operation.string.is',
+                     'v': value})
+
+            elif isinstance(value, list):
+                querystringthing.append(
+                    {'i': name,
+                     'o': 'plone.app.querystring.operation.selection.is',
+                     'v': value})
+
+            else:
+                raise ValueError(
+                    'This query is too complicated, since we need'
+                    ' to generate a fancy querystring.'
+                    ' Currently only string and list values are '
+                    ' accepted. Please build your own querystring'
+                    ' object (see plone.app.querystring).')
+
+        return self.having(query=querystringthing)
+
+
+builder_registry.register('collection', CollectionBuilder)
+builder_registry.register('topic', CollectionBuilder)
