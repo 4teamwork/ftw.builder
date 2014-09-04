@@ -5,6 +5,9 @@ Changelog
 1.3.5 (unreleased)
 ------------------
 
+- Implement collection builder.
+  [jone]
+
 - Fixed default value setter for different "owners" field.
   [phgross]
 
