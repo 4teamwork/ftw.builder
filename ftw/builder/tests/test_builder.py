@@ -31,7 +31,7 @@ class TestCreatingObjects(IntegrationTestCase):
         self.assertEqual('folder', folder.getId())
 
     def test_create_folder_with_title(self):
-        folder = create(Builder('folder').titled('The Folder'))
+        folder = create(Builder('folder').titled(u'The Folder'))
         self.assertEqual('The Folder', folder.Title())
         self.assertEqual('the-folder', folder.getId())
 
