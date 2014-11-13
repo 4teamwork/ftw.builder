@@ -2,10 +2,13 @@ Changelog
 =========
 
 
-1.4.1 (unreleased)
+1.5.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Plone 5 support: default content builders are switched to the dexterity implementation
+  by default for Plone >= 5.
+  The builder classes were moved from ``archetypes`` module to ``content`` module.
+  [jone]
 
 
 1.4.0 (2014-09-04)
