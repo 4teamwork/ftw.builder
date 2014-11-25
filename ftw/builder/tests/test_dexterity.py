@@ -1,4 +1,3 @@
-from DateTime import DateTime
 from datetime import datetime
 from ftw.builder import Builder
 from ftw.builder import create
@@ -86,8 +85,8 @@ class TestDexterityBuilder(DexterityBaseTestCase):
 
         with self.assertRaises(ValueError) as cm:
             create(Builder('book')
-                         .with_constraints()
-                         .having(title=u'Testtitle'))
+                   .with_constraints()
+                   .having(title=u'Testtitle'))
 
         self.assertEquals(
             'Disallowed subobject type: Book', str(cm.exception))
@@ -99,26 +98,26 @@ class TestDexterityBuilder(DexterityBaseTestCase):
 
     def test_sets_value_on_schema_fields(self):
         book = create(Builder('book')
-                         .having(title=u'Testtitle'))
+                      .having(title=u'Testtitle'))
 
         self.assertEquals('Testtitle', book.title)
 
     def test_sets_value_on_behavior_fields(self):
         book = create(Builder('book')
-                     .having(title=u'Testtitle',
-                             effective=datetime(2013, 1, 1)))
+                      .having(title=u'Testtitle',
+                              effective=datetime(2013, 1, 1)))
 
-        self.assertEquals(DateTime(2013, 1, 1), book.effective())
+        self.assertEquals(datetime(2013, 1, 1), book.effective)
 
     def test_initalizing_fields_with_missing_value(self):
         book = create(Builder('book')
-                     .having(title=u'Testtitle'))
+                      .having(title=u'Testtitle'))
 
         self.assertEquals((), book.chapters)
 
     def test_sets_default_values_by_default(self):
         book = create(Builder('book')
-                     .having(title=u'Testtitle'))
+                      .having(title=u'Testtitle'))
 
         self.assertEquals(u'test_user_1_', book.author)
         self.assertEquals((u'test_user_1_', ), book.listCreators())
