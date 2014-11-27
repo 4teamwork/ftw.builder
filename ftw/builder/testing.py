@@ -1,9 +1,11 @@
 from ftw.builder import session
+from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
 from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import PloneSandboxLayer
 from plone.testing import Layer
+from Products.CMFPlone.utils import getFSVersionTuple
 from zope.configuration import xmlconfig
 
 
@@ -51,6 +53,10 @@ class BuilderLayer(PloneSandboxLayer):
             '  <includePluginsOverrides package="plone" />'
             '</configure>',
             context=configurationContext)
+
+    def setUpPloneSite(self, portal):
+        if getFSVersionTuple() > (5, ):
+            applyProfile(portal, 'plone.app.contenttypes:default')
 
 
 BUILDER_FIXTURE = BuilderLayer()
