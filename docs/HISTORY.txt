@@ -5,6 +5,9 @@ Changelog
 1.5.0 (unreleased)
 ------------------
 
+- Restore Plone 4.1 compatibility by making any DX imports conditional.
+  [lgraf]
+
 - Plone 5 support: default content builders are switched to the dexterity implementation
   by default for Plone >= 5.
   The builder classes were moved from ``archetypes`` module to ``content`` module.
