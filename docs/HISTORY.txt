@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.5.0 (unreleased)
+1.5.0 (2014-12-03)
 ------------------
 
 - Restore Plone 4.1 compatibility by making any DX imports conditional.
