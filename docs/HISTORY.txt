@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.5.1 (unreleased)
+1.5.1 (2014-12-03)
 ------------------
 
 - Fix NamedBlobFile import issue for Plone <= 4.2 where blobs are optional.
