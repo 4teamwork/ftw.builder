@@ -6,7 +6,13 @@ from StringIO import StringIO
 
 if HAS_DEXTERITY:
     from ftw.builder.dexterity import DexterityBuilder
-    from plone.namedfile.file import NamedBlobFile
+
+    from plone.namedfile.interfaces import HAVE_BLOBS
+    if HAVE_BLOBS:
+        from plone.namedfile.file import NamedBlobFile as NamedFile
+    else:
+        from plone.namedfile.file import NamedFile
+
 
 if getFSVersionTuple() > (5, ):
     DefaultContentBuilder = DexterityBuilder
@@ -54,7 +60,7 @@ class FileBuilder(DefaultContentBuilder):
         return self
 
     def _attach_dx_file(self, content, name):
-        self.attach(NamedBlobFile(data=content, filename=name))
+        self.attach(NamedFile(data=content, filename=name))
         return self
 
 builder_registry.register('file', FileBuilder)
