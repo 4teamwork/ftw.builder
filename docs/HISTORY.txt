@@ -5,7 +5,8 @@ Changelog
 1.5.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix NamedBlobFile import issue for Plone <= 4.2 where blobs are optional.
+  [jone]
 
 
 1.5.0 (2014-12-03)
