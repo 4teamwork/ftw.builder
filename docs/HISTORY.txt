@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.5.2 (unreleased)
+1.5.2 (2014-12-06)
 ------------------
 
 - File builder: fix default filename encoding for AT.
