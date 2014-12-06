@@ -43,6 +43,8 @@ class FileBuilder(DefaultContentBuilder):
         if HAS_DEXTERITY and issubclass(self.__class__, DexterityBuilder):
             return self._attach_dx_file(content, name)
         else:
+            if isinstance(name, unicode):
+                name = name.encode('utf-8')
             return self._attach_at_file(content, name)
 
     def attach(self, file_):
