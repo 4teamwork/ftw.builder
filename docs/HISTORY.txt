@@ -5,7 +5,10 @@ Changelog
 1.5.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- File builder: fix default filename encoding for AT.
+  This was a regression in 1.5.0, where filenames were changed to unicode
+  because of the consolidation of Archetypes and Dexterity builders.
+  [jone]
 
 
 1.5.1 (2014-12-03)
