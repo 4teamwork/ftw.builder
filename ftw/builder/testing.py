@@ -41,7 +41,7 @@ def functional_session_factory():
     return sess
 
 
-class BuilderLayer(PloneSandboxLayer):
+class BuilderTestingLayer(PloneSandboxLayer):
 
     defaultBases = (PLONE_FIXTURE, BUILDER_LAYER)
 
@@ -59,7 +59,7 @@ class BuilderLayer(PloneSandboxLayer):
             applyProfile(portal, 'plone.app.contenttypes:default')
 
 
-BUILDER_FIXTURE = BuilderLayer()
+BUILDER_FIXTURE = BuilderTestingLayer()
 
 BUILDER_INTEGRATION_TESTING = IntegrationTesting(
     bases=(BUILDER_FIXTURE, ), name="Builder:Integration")
