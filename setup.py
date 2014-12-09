@@ -41,6 +41,8 @@ setup(name='ftw.builder',
 
       install_requires=[
         'Products.CMFPlone',
+        'lxml',
+        'path.py',
         'setuptools',
         'zope.component',
         'zope.container',
