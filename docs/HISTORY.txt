@@ -5,7 +5,11 @@ Changelog
 1.5.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add more default builders:
+
+  - a "zcml" builder for creating ZCML files
+
+  [jone]
 
 
 1.5.2 (2014-12-06)

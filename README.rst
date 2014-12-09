@@ -366,6 +366,28 @@ the ``force`` flag:
     builder_registry.register('file', CustomFileBuilder, force=True)
 
 
+Other builders
+--------------
+
+ZCML file builder
+~~~~~~~~~~~~~~~~~
+
+The ZCML builder builds a ZCML file:
+
+.. code:: python
+
+    create(Builder('zcml')
+           .at_path('/path/to/my/package/configure.zcml')
+           .with_i18n_domain('my.package')
+
+           .include('.browser')
+           .include('Products.GenericSetup', file='meta.zcml')
+           .include(file='profiles.zcml')
+
+           .with_node('i18n:registerTranslations', directory='locales'))
+
+
+
 Development / Tests
 -------------------
 

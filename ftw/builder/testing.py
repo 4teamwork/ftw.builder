@@ -1,4 +1,5 @@
 from ftw.builder import session
+from path import Path
 from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
@@ -7,6 +8,8 @@ from plone.app.testing import PloneSandboxLayer
 from plone.testing import Layer
 from Products.CMFPlone.utils import getFSVersionTuple
 from zope.configuration import xmlconfig
+import shutil
+import tempfile
 
 
 class BuilderLayer(Layer):
@@ -68,3 +71,17 @@ BUILDER_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(BUILDER_FIXTURE,
            set_builder_session_factory(functional_session_factory)),
     name="Builder:Functional")
+
+
+class TempDirectoryLayer(Layer):
+
+    defaultBases = (BUILDER_LAYER, )
+
+    def testSetUp(self):
+        self['temp_directory'] = Path(tempfile.mkdtemp('ftw.builder'))
+
+    def testTearDown(self):
+        self['temp_directory'].rmtree_p()
+
+
+TEMP_DIRECTORY_LAYER = TempDirectoryLayer()
