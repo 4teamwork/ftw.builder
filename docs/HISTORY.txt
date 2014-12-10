@@ -8,6 +8,9 @@ Changelog
 - Add more default builders:
 
   - a "zcml" builder for creating ZCML files
+  - a "python package" builder for creating python package on the file system
+  - a "namespace package" builder, used internally by the "python package" builder
+  - a "subpackage" builder for extending a python package with nested packages
 
   [jone]
 

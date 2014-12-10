@@ -28,7 +28,8 @@ class ZCMLBuilder(object):
     def __init__(self, session):
         self.session = session
         self.path = None
-        self.root = etree.Element("configure", nsmap={None: 'http://namespaces.zope.org/zope'})
+        self.root = etree.Element("configure", nsmap={
+                None: 'http://namespaces.zope.org/zope'})
         self.lazy_nodes = []
 
     def at_path(self, path):
@@ -52,8 +53,8 @@ class ZCMLBuilder(object):
 
     def with_lazy_node(self, callback, parent=None):
         """Creates a placeholder in the document.
-        The placeholder will be updated on creation time by calling the callback and
-        using its return value to update the node.
+        The placeholder will be updated on creation time by calling the
+        callback and using its return value to update the node.
         The callback must return a tuple of tagname and attributes (dict).
         """
         if parent is None:
@@ -68,7 +69,8 @@ class ZCMLBuilder(object):
         def callback():
             if isinstance(package_or_builder, ZCMLBuilder):
                 if attributes:
-                    raise ValueError('Cannot set additional attributes when including builder.')
+                    raise ValueError('Cannot set additional attributes'
+                                     ' when including builder.')
 
                 dirname, filename = package_or_builder.path.splitpath()
                 package = self.get_relative_dottedname(dirname)
@@ -88,7 +90,8 @@ class ZCMLBuilder(object):
         if path.name.endswith('.py'):
             path = path.splitext()[0]
         if path.name != '.' and '.' in path.name:
-            raise ValueError('Unsupported filename extension: {0}'.format(path.name))
+            raise ValueError('Unsupported filename extension: {0}'.format(
+                    path.name))
         return '.'.join(path.splitall() + list(postfix))
 
     def load_namespace(self, prefix, url=None):
@@ -96,8 +99,9 @@ class ZCMLBuilder(object):
             url = NAMESPACES[prefix]
 
         if prefix in self.root.nsmap:
-            assert self.root.nsmap[prefix] == url, 'Invalid prefix "{0}" for url' + \
-                ' "{1}", there is already an url "{2}" for the same prefix'.format(
+            assert self.root.nsmap[prefix] == url, \
+                'Invalid prefix "{0}" for url "{1}", there is already an' + \
+                ' url "{2}" for the same prefix'.format(
                 prefix, url, self.root.nsmap[prefix])
             return
 
