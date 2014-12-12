@@ -12,6 +12,7 @@ Changelog
   - a "namespace package" builder, used internally by the "python package" builder
   - a "subpackage" builder for extending a python package with nested packages
   - a "genericsetup profile" builder
+  - a "plone upgrade step" builder for building Generic Setup upgrade steps
 
   [jone]
 

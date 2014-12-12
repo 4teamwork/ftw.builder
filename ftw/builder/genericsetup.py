@@ -1,4 +1,5 @@
 from ftw.builder import builder_registry
+from ftw.builder import create
 from lxml import etree
 from path import Path
 
@@ -15,8 +16,10 @@ class GenericSetupBuilder(object):
         self.dependencies = []
         self.package = None
         self.path = None
+        self.package_name = None
         self.directories = []
         self.files = []
+        self.upgrades = []
 
     def named(self, name):
         """Change the name of the profile.
@@ -64,6 +67,18 @@ class GenericSetupBuilder(object):
                 self.dependencies.append(profile_id)
         return self
 
+    def with_upgrade(self, upgrade_builder):
+        """Adds an upgrade builder for this profile.
+        """
+        self.upgrades.append(upgrade_builder.for_profile(self))
+        return self
+
+    def with_package_name(self, package_name):
+        """Sets the package name.
+        """
+        self.package_name = package_name
+        return self
+
     def within(self, package):
         """Declare the package (subpackage builder) where the profile
         should be created.
@@ -78,10 +93,12 @@ class GenericSetupBuilder(object):
                 ' register it with PythonPackageBuilder.with_profile(..)'
                 ' or use .within(package).')
 
+        self.profile_name = ':'.join((self.package_name, self.name))
         self.path = self.package.path.joinpath('profiles', self.name)
         self.path.makedirs()
         self._prepare_metadata_xml()
         self._register_zcml()
+        map(create, self.upgrades)
 
         for relative_path in self.directories:
             self.path.joinpath(relative_path).makedirs()
@@ -91,7 +108,16 @@ class GenericSetupBuilder(object):
 
         return self.path
 
+    def _autopick_version_by_upgrades(self):
+        if self.fs_version is not None:
+            return
+
+        for upgrade in self.upgrades:
+            if not self.fs_version or upgrade.destination_version > self.fs_version:
+                self.fs_version = upgrade.destination_version
+
     def _prepare_metadata_xml(self):
+        self._autopick_version_by_upgrades()
         root = etree.Element('metadata')
         if self.fs_version:
             etree.SubElement(root, 'version').text = self.fs_version
@@ -115,5 +141,82 @@ class GenericSetupBuilder(object):
             directory=self.path.relpath(self.package.path),
             provides='Products.GenericSetup.interfaces.EXTENSION')
 
-
 builder_registry.register('genericsetup profile', GenericSetupBuilder)
+
+
+NOOP_UPGRADE_CODE = """
+def upgrade(setup_context):
+    return
+"""
+
+
+class PloneUpgradeStepBuilder(object):
+
+    def __init__(self, session):
+        self.session = session
+        self.source_version = None
+        self.destination_version = None
+        self.title = None
+        self.description = None
+        self.profile_builder = None
+        self.code = None
+        self.funcname = None
+        self.with_code(NOOP_UPGRADE_CODE, 'upgrade')
+
+    def upgrading(self, from_, to):
+        """Set the source and destionation version for this upgrade step.
+        """
+        self.source_version = from_
+        self.destination_version = to
+        return self
+
+    def titled(self, title):
+        """Sets the title of the upgrade step.
+        """
+        self.title = title
+        return self
+
+    def with_description(self, description):
+        """Sets the description of the upgrade step.
+        """
+        self.description = description
+        return self
+
+    def with_code(self, python_code_as_string, function_or_classname):
+        """Change the code to be written to the python file.
+        """
+        self.code = python_code_as_string
+        self.funcname = function_or_classname
+        return self
+
+    def for_profile(self, profile_builder):
+        """Set the profile builder for this up
+        """
+        self.profile_builder = profile_builder
+        return self
+
+    def create(self):
+        if not self.source_version or not self.destination_version:
+            raise ValueError('Source and destination versions are required.'
+                             ' Use .upgrade(from, to).')
+        if not self.profile_builder:
+            raise ValueError('Unkown profile for the upgrade step:'
+                             ' Use GenericSetupBuilder.with_upgrade(this)')
+
+        basename = 'to{0}'.format(self.destination_version.replace('.', '_'))
+        package = self.profile_builder.package.get_subpackage('upgrades')
+        if self.profile_builder.name != 'default':
+            package = package.get_subpackage(self.profile_builder.name)
+
+        package.with_file('{0}.py'.format(basename), self.code)
+        package.with_zcml_node(
+            'genericsetup:upgradeStep',
+            title=self.title or '',
+            description=self.description or '',
+            source=self.source_version,
+            destination=self.destination_version,
+            handler='.'.join(('', basename, self.funcname)),
+            profile=self.profile_builder.profile_name)
+
+
+builder_registry.register('plone upgrade step', PloneUpgradeStepBuilder)

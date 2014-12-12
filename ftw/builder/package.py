@@ -160,7 +160,7 @@ class PythonPackageBuilder(object):
     def with_profile(self, profile_builder):
         """Register a generic setup profile for creation.
         """
-        self.profiles.append(profile_builder.within(self.package))
+        self.profiles.append(profile_builder.with_package_name(self.name).within(self.package))
         return self
 
     def with_root_directory(self, relative_path):

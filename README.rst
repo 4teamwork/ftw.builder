@@ -449,6 +449,25 @@ The "genericsetup profile" builder helps building a profile within a python pack
                                     makedirs=True)))
 
 
+Plone upgrade step builder
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Builds a Generic Setup upgrade step for a package:
+
+.. code:: python
+
+    create(Builder('python package')
+           .named('the.package')
+           .at_path(self.layer['temp_directory'])
+
+           .with_profile(Builder('genericsetup profile')
+                         .with_upgrade(Builder('plone upgrade step')
+                                       .upgrading('1000', '1001')
+                                       .titled('Add some actions...')
+                                       .with_description('Some details...'))))
+
+
+
 ZCML file builder
 ~~~~~~~~~~~~~~~~~
 
