@@ -129,12 +129,12 @@ class TestDexterityBuilder(DexterityBaseTestCase):
 
 
 @adapter(IObjectCreatedEvent)
-def fake_created_handler(event):
+def track_created_events(event):
     getSite().fired_events.append(event)
 
 
 @adapter(IObjectAddedEvent)
-def fake_added_handler(event):
+def track_added_events(event):
     getSite().fired_events.append(event)
 
 
@@ -142,26 +142,12 @@ class TestEventNotifying(DexterityBaseTestCase):
 
     def setUp(self):
         super(TestEventNotifying, self).setUp()
-
         self.portal.fired_events = []
-        gsm = getGlobalSiteManager()
-        gsm.registerHandler(fake_created_handler)
-        gsm.registerHandler(fake_added_handler)
-
-    def tearDown(self):
-        super(TestEventNotifying, self).tearDown()
-        gsm = getGlobalSiteManager()
-        gsm.unregisterHandler(fake_created_handler)
-        gsm.unregisterHandler(fake_added_handler)
+        self.portal.getSiteManager().registerHandler(track_created_events)
+        self.portal.getSiteManager().registerHandler(track_added_events)
 
     def test_notify_events_by_default(self):
         create(Builder('book').having(title=u'Testtitle'))
-
-        events = self.portal.fired_events
-
-        self.assertTrue(IObjectCreatedEvent.providedBy(events[0]))
-        self.assertTrue(IObjectAddedEvent.providedBy(events[1]))
-        self.assertEquals(
-            2, len(events),
-            'The expected events (ObjectAddedEvent and ObjectCreatedEvent)'
-            'are fired not like expected (%s)' % str(events))
+        created_event, added_event = self.portal.fired_events
+        self.assertTrue(IObjectCreatedEvent.providedBy(created_event))
+        self.assertTrue(IObjectAddedEvent.providedBy(added_event))
