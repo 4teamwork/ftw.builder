@@ -431,6 +431,23 @@ You may want to isolate the component registry with
                            self.layer['portal'].restrictedTraverse('hello-world.json')())
 
 
+Generic Setup profile builder
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The "genericsetup profile" builder helps building a profile within a python package:
+
+.. code:: python
+
+    create(Builder('python package')
+           .named('the.package')
+           .at_path(self.layer['temp_directory'])
+
+           .with_profile(Builder('genericsetup profile')
+                         .with_fs_version('3109')
+                         .with_dependencies('collective.foo:default')
+                         .with_file('types/MyType.xml', '<object></object>',
+                                    makedirs=True)))
+
 
 ZCML file builder
 ~~~~~~~~~~~~~~~~~

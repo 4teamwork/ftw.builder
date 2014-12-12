@@ -17,3 +17,4 @@ import ftw.builder.group
 import ftw.builder.user
 import ftw.builder.zcml
 import ftw.builder.package
+import ftw.builder.genericsetup

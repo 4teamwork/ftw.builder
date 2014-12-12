@@ -62,10 +62,11 @@ class Package(object):
     path and the currently loaded modules (sys.modules) is cleaned up.
     """
 
-    def __init__(self, name, root_path, package_path):
+    def __init__(self, name, root_path, package_path, profiles=None):
         self.name = name
         self.root_path = root_path
         self.package_path = package_path
+        self.profiles = profiles or {}
 
     def __enter__(self):
         sys.path.insert(0, self.root_path)
@@ -129,6 +130,7 @@ class PythonPackageBuilder(object):
         self.package = Builder('subpackage')
         self.directories = []
         self.files = []
+        self.profiles = []
 
     def at_path(self, path):
         """Set the path on the filesystem where the python package should be put,
@@ -153,6 +155,12 @@ class PythonPackageBuilder(object):
         the location / path is automatically set.
         """
         self.package.with_subpackage(subpackage_builder)
+        return self
+
+    def with_profile(self, profile_builder):
+        """Register a generic setup profile for creation.
+        """
+        self.profiles.append(profile_builder.within(self.package))
         return self
 
     def with_root_directory(self, relative_path):
@@ -212,9 +220,12 @@ class PythonPackageBuilder(object):
             ' set the dottedname of the package.'
         self.path.mkdir_p()
 
+        self.package.at_path(self.path.joinpath(*self.name.split('.')))
         self._create_setup()
         self._create_namespaces()
-        package_path = self._create_package()
+        profile_paths = dict((builder.name, create(builder))
+                             for builder in self.profiles)
+        package_path = create(self.package)
 
         for relative_path in self.directories:
             self.path.joinpath(relative_path).makedirs()
@@ -223,7 +234,8 @@ class PythonPackageBuilder(object):
             self.path.joinpath(relative_path).write_text(contents)
 
         self._build_egginfo()
-        return Package(self.name, self.path, package_path)
+        return Package(self.name, self.path, package_path,
+                       profiles=profile_paths)
 
     def _create_setup(self):
         self.with_root_file('setup.py', SETUP_PY_TEMPLATE.format(
@@ -234,10 +246,6 @@ class PythonPackageBuilder(object):
         for dottedname in parent_namespaces(self.name):
             path = self.path.joinpath(*dottedname.split('.'))
             create(Builder('namespace package').at_path(path))
-
-    def _create_package(self):
-        self.package.at_path(self.path.joinpath(*self.name.split('.')))
-        return create(self.package)
 
     def _build_egginfo(self):
         # The current Python (sys.executable) might not have setuptools
