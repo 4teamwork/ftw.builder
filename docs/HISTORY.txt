@@ -11,6 +11,7 @@ Changelog
   - a "python package" builder for creating python package on the file system
   - a "namespace package" builder, used internally by the "python package" builder
   - a "subpackage" builder for extending a python package with nested packages
+  - a "genericsetup profile" builder
 
   [jone]
 
