@@ -1,5 +1,6 @@
 from ftw.builder import builder_registry
 from ftw.builder import create
+from ftw.builder.utils import serialize_callable
 from lxml import etree
 from path import Path
 
@@ -144,10 +145,10 @@ class GenericSetupBuilder(object):
 builder_registry.register('genericsetup profile', GenericSetupBuilder)
 
 
-NOOP_UPGRADE_CODE = """
-def upgrade(setup_context):
+def noop_upgrade(setup_context):
+    """Default noop upgrade step.
+    """
     return
-"""
 
 
 class PloneUpgradeStepBuilder(object):
@@ -161,7 +162,7 @@ class PloneUpgradeStepBuilder(object):
         self.profile_builder = None
         self.code = None
         self.funcname = None
-        self.with_code(NOOP_UPGRADE_CODE, 'upgrade')
+        self.calling(noop_upgrade)
 
     def upgrading(self, from_, to):
         """Set the source and destionation version for this upgrade step.
@@ -183,11 +184,27 @@ class PloneUpgradeStepBuilder(object):
         return self
 
     def with_code(self, python_code_as_string, function_or_classname):
-        """Change the code to be written to the python file.
+        """Sets the python code of the upgrade.
+        The python code is passed as string ``python_code_as_string``
+        and will be written directly to the python file.
+        For registering it properly in the ZCML, the name of the callable
+        must be set with the ``function_or_classname`` argument.
         """
         self.code = python_code_as_string
         self.funcname = function_or_classname
         return self
+
+    def calling(self, callable_, *to_import):
+        """Make the upgrade step execute the callable passed as argument.
+        The callable will be serialized to a string.
+
+        If the callable is a class, superclasses are automatically imported.
+        Other globals are not imported and need to be passed to ``calling``
+        as additional positional arguments.
+        """
+
+        source = serialize_callable(callable_, *to_import)
+        return self.with_code(source, callable_.__name__)
 
     def for_profile(self, profile_builder):
         """Set the profile builder for this up
