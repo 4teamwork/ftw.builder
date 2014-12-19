@@ -37,6 +37,16 @@ class TestGenericSetupProfileBuilder(TestCase):
                  'version': u'2003'},
                 self.get_profile_info('the.package:default'))
 
+    def test_default_title_is_package_name(self):
+        package = create(self.package_builder
+                         .with_profile(Builder('genericsetup profile')))
+
+        with package.zcml_loaded(self.layer['configurationContext']):
+            self.assertDictContainsSubset(
+                {'id': u'the.package:default',
+                 'title': u'the.package'},
+                self.get_profile_info('the.package:default'))
+
     def test_creating_files_in_the_profile(self):
         package = create(self.package_builder
                          .with_profile(Builder('genericsetup profile')
