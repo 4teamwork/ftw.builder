@@ -138,7 +138,7 @@ class GenericSetupBuilder(object):
         self.package.with_zcml_node(
             'genericsetup:registerProfile',
             name=self.name,
-            title=self.title or self.name,
+            title=self.title or self.package_name,
             directory=self.path.relpath(self.package.path),
             provides='Products.GenericSetup.interfaces.EXTENSION')
 
