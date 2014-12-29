@@ -76,8 +76,8 @@ class Package(object):
         sys.path.remove(self.root_path)
         modules_to_remove = filter(lambda name: name.startswith(self.name),
                                    sys.modules)
-        modules_to_remove += (sys.modules.viewkeys()
-                              & parent_namespaces(self.name))
+        modules_to_remove += (set(sys.modules.keys())
+                              & set(parent_namespaces(self.name)))
         for name in modules_to_remove:
             del sys.modules[name]
 
