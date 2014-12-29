@@ -366,6 +366,127 @@ the ``force`` flag:
     builder_registry.register('file', CustomFileBuilder, force=True)
 
 
+Other builders
+--------------
+
+Python package builder
+~~~~~~~~~~~~~~~~~~~~~~
+
+The Python package builder builds a python package on the file system.
+
+- creates a setup.py
+- namespace packages are supported
+- builds the egg-info
+- creates a configure.zcml on demand
+
+Example:
+
+.. code:: python
+
+    >>> import tempfile
+    >>> tempdir = tempfile.mkdtemp()
+
+    >>> package = create(Builder('python package')
+    ...                  .at_path(tempdir)
+    ...                  .named('my.package')
+    ...
+    ...                  .with_root_directory('docs')
+    ...                  .with_root_file('docs/HISTORY.txt', 'CHANGELOG...')
+    ...                  .with_file('resources/print.css', 'body {}', makedirs=True)
+    ...
+    ...                  .with_subpackage(Builder('subpackage')
+    ...                                   .named('browser')))
+    >>>
+    >>> with package.imported() as module:
+    ...     print module
+    ...
+    <module 'my.package' from '...../tmpcAZhM2/my/package/__init__.py'>
+
+It is also possible to create / load ZCML, all you need is a stacked configuration context.
+Plone's testing layers provide a configuration context, but be aware that the component
+registry is not isolated.
+You may want to isolate the component registry with
+`plone.testing.zca.pushGlobalRegistry <https://github.com/plone/plone.testing/blob/master/src/plone/testing/zca.py#L54>`_.
+
+.. code:: python
+
+      package = create(
+          Builder('python package')
+          .named('the.package')
+          .at_path(self.layer['temp_directory'])
+
+          .with_subpackage(
+              Builder('subpackage')
+              .named('browser')
+
+              .with_file('hello_world.pt', '"Hello World"')
+              .with_zcml_node('browser:page',
+                              **{'name': 'hello-world.json',
+                                 'template': 'hello_world.pt',
+                                 'permission': 'zope2.View',
+                                 'for': '*'})))
+
+      with package.zcml_loaded(self.layer['configurationContext']):
+          self.assertEqual('"Hello World"',
+                           self.layer['portal'].restrictedTraverse('hello-world.json')())
+
+
+Generic Setup profile builder
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The "genericsetup profile" builder helps building a profile within a python package:
+
+.. code:: python
+
+    create(Builder('python package')
+           .named('the.package')
+           .at_path(self.layer['temp_directory'])
+
+           .with_profile(Builder('genericsetup profile')
+                         .with_fs_version('3109')
+                         .with_dependencies('collective.foo:default')
+                         .with_file('types/MyType.xml', '<object></object>',
+                                    makedirs=True)))
+
+
+Plone upgrade step builder
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Builds a Generic Setup upgrade step for a package:
+
+.. code:: python
+
+    create(Builder('python package')
+           .named('the.package')
+           .at_path(self.layer['temp_directory'])
+
+           .with_profile(Builder('genericsetup profile')
+                         .with_upgrade(Builder('plone upgrade step')
+                                       .upgrading('1000', '1001')
+                                       .titled('Add some actions...')
+                                       .with_description('Some details...'))))
+
+
+
+ZCML file builder
+~~~~~~~~~~~~~~~~~
+
+The ZCML builder builds a ZCML file:
+
+.. code:: python
+
+    create(Builder('zcml')
+           .at_path('/path/to/my/package/configure.zcml')
+           .with_i18n_domain('my.package')
+
+           .include('.browser')
+           .include('Products.GenericSetup', file='meta.zcml')
+           .include(file='profiles.zcml')
+
+           .with_node('i18n:registerTranslations', directory='locales'))
+
+
+
 Development / Tests
 -------------------
 

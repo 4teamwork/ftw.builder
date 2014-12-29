@@ -5,7 +5,16 @@ Changelog
 1.5.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add more default builders:
+
+  - a "zcml" builder for creating ZCML files
+  - a "python package" builder for creating python package on the file system
+  - a "namespace package" builder, used internally by the "python package" builder
+  - a "subpackage" builder for extending a python package with nested packages
+  - a "genericsetup profile" builder
+  - a "plone upgrade step" builder for building Generic Setup upgrade steps
+
+  [jone]
 
 
 1.5.2 (2014-12-06)

@@ -1,12 +1,15 @@
 from ftw.builder import session
+from path import Path
 from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
 from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import PloneSandboxLayer
 from plone.testing import Layer
+from plone.testing import zca
 from Products.CMFPlone.utils import getFSVersionTuple
 from zope.configuration import xmlconfig
+import tempfile
 
 
 class BuilderLayer(Layer):
@@ -41,9 +44,32 @@ def functional_session_factory():
     return sess
 
 
-class BuilderLayer(PloneSandboxLayer):
+class TempDirectoryLayer(Layer):
 
-    defaultBases = (PLONE_FIXTURE, BUILDER_LAYER)
+    defaultBases = (BUILDER_LAYER, )
+
+    def testSetUp(self):
+        self['temp_directory'] = Path(tempfile.mkdtemp('ftw.builder'))
+
+    def testTearDown(self):
+        self['temp_directory'].rmtree_p()
+
+
+TEMP_DIRECTORY_LAYER = TempDirectoryLayer()
+
+
+class BuilderTestingLayer(PloneSandboxLayer):
+
+    defaultBases = (PLONE_FIXTURE, TEMP_DIRECTORY_LAYER, )
+
+    def testSetUp(self):
+        zca.pushGlobalRegistry()
+        self['configurationContext'] = zca.stackConfigurationContext(
+            self.get('configurationContext'),
+            name='ftw.builder:PACKAGE_BUILDER_LAYER')
+
+    def testTearDown(self):
+        zca.popGlobalRegistry()
 
     def setUpZope(self, app, configurationContext):
         xmlconfig.string(
@@ -59,7 +85,7 @@ class BuilderLayer(PloneSandboxLayer):
             applyProfile(portal, 'plone.app.contenttypes:default')
 
 
-BUILDER_FIXTURE = BuilderLayer()
+BUILDER_FIXTURE = BuilderTestingLayer()
 
 BUILDER_INTEGRATION_TESTING = IntegrationTesting(
     bases=(BUILDER_FIXTURE, ), name="Builder:Integration")
