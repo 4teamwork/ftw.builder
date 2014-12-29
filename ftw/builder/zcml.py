@@ -123,7 +123,8 @@ class ZCMLBuilder(object):
         normalized = StringIO()
         self.root.getroottree().write_c14n(normalized)
         xml = etree.fromstring(normalized.getvalue())
-        return etree.tostring(xml, pretty_print=True, encoding='unicode')
+        return etree.tostring(xml, pretty_print=True,
+                              encoding='utf8').decode('utf-8')
 
     def _update_lazy_nodes(self):
         for node, callback in self.lazy_nodes:
