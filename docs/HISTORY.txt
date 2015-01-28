@@ -5,7 +5,10 @@ Changelog
 1.6.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Package builder: fix importing packages with shared namespace.
+  When building a package in an already imported namespace package,
+  the namespace package must be refreshed by deleting it before importing.
+  [jone]
 
 
 1.6.0 (2014-12-31)
