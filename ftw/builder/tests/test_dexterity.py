@@ -13,7 +13,6 @@ from plone.dexterity.fti import DexterityFTI
 from unittest2 import TestCase
 from zope import schema
 from zope.component import adapter
-from zope.component.globalregistry import getGlobalSiteManager
 from zope.component.hooks import getSite
 from zope.interface import alsoProvides
 from zope.interface import Interface
