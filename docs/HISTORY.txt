@@ -5,7 +5,8 @@ Changelog
 1.6.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add creation date setter to builder.
+  [mbaechtold]
 
 
 1.6.0 (2014-12-31)

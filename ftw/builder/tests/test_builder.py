@@ -83,6 +83,15 @@ class TestCreatingObjects(IntegrationTestCase):
         self.assertEquals(modified, folder.modified())
         self.assertEquals(modified, obj2brain(folder).modified)
 
+    def test_with_creation_date_updates_obj_and_brain(self):
+        created = DateTime(2011, 2, 3, 5, 7, 11)
+
+        folder = create(Builder('folder')
+                        .with_creation_date(created))
+
+        self.assertEquals(created, folder.created())
+        self.assertEquals(created, obj2brain(folder).created)
+
     def set_workflow_chain(self, for_type, to_workflow):
         wftool = getToolByName(self.portal, 'portal_workflow')
         wftool.setChainForPortalTypes((for_type,),

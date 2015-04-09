@@ -98,7 +98,7 @@ class DexterityBuilder(PloneObjectBuilder):
             IValue, name='default')
 
         if default is not None:
-            value =  default.get()
+            value = default.get()
         else:
             value = getattr(field, 'default', None)
 
@@ -135,3 +135,7 @@ class DexterityBuilder(PloneObjectBuilder):
         yield fti.lookupSchema()
         for schema in getAdditionalSchemata(portal_type=portal_type):
             yield schema
+
+    def set_creation_date(self, obj):
+        obj.creation_date = self.creation_date
+        obj.reindexObject(idxs=['created'])
