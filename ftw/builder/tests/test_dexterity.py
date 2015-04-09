@@ -5,6 +5,7 @@ from ftw.builder import create
 from ftw.builder import registry
 from ftw.builder.dexterity import DexterityBuilder
 from ftw.builder.testing import BUILDER_INTEGRATION_TESTING
+from ftw.builder.tests.test_builder import obj2brain
 from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
@@ -126,6 +127,14 @@ class TestDexterityBuilder(DexterityBaseTestCase):
     def test_object_providing_interface(self):
         book = create(Builder('book').providing(IFoo))
         self.assertTrue(IFoo.providedBy(book))
+
+    def test_with_creation_date_updates_obj_and_brain(self):
+        creation_date = DateTime(2011, 2, 3, 5, 7, 11)
+
+        book = create(Builder('book').with_creation_date(creation_date))
+
+        self.assertEquals(creation_date, book.created())
+        self.assertEquals(creation_date, obj2brain(book).created)
 
 
 @adapter(IObjectCreatedEvent)

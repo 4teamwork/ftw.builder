@@ -28,6 +28,7 @@ class PloneObjectBuilder(object):
         self.arguments = {}
         self.review_state = None
         self.modification_date = None
+        self.creation_date = None
         self.interfaces = []
 
     def within(self, container):
@@ -48,6 +49,10 @@ class PloneObjectBuilder(object):
 
     def with_modification_date(self, modification_date):
         self.modification_date = modification_date
+        return self
+
+    def with_creation_date(self, creation_date):
+        self.creation_date = creation_date
         return self
 
     def providing(self, *interfaces):
@@ -73,6 +78,9 @@ class PloneObjectBuilder(object):
         if self.modification_date:
             self.set_modification_date(obj)
 
+        if self.creation_date:
+            self.set_creation_date(obj)
+
         if self.session.auto_commit:
             transaction.commit()
 
@@ -89,9 +97,9 @@ class PloneObjectBuilder(object):
                     self.portal_type, chain))
 
         wftool.setStatusOf(chain[0], obj, {
-                'review_state': self.review_state,
-                'action': '',
-                'actor': ''})
+            'review_state': self.review_state,
+            'action': '',
+            'actor': ''})
 
         for workflow_id in chain:
             workflow = wftool.get(workflow_id)
@@ -105,3 +113,7 @@ class PloneObjectBuilder(object):
         obj.setModificationDate(
             modification_date=self.modification_date)
         obj.reindexObject(idxs=['modified'])
+
+    def set_creation_date(self, obj):
+        obj.setCreationDate(creation_date=self.creation_date)
+        obj.reindexObject(idxs=['created'])
