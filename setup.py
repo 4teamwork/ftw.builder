@@ -29,7 +29,7 @@ setup(name='ftw.builder',
         ],
 
       keywords='ftw builder plone',
-      author='4teamwork GmbH',
+      author='4teamwork AG',
       author_email='mailto:info@4teamwork.ch',
       url='https://github.com/4teamwork/ftw.builder',
 
