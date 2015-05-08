@@ -503,9 +503,9 @@ Development / Tests
 Links
 -----
 
-- Main github project repository: https://github.com/4teamwork/ftw.builder
-- Issue tracker: https://github.com/4teamwork/ftw.builder/issues
-- Package on pypi: http://pypi.python.org/pypi/ftw.builder
+- Github: https://github.com/4teamwork/ftw.builder
+- Issues: https://github.com/4teamwork/ftw.builder/issues
+- Pypi: http://pypi.python.org/pypi/ftw.builder
 - Continuous integration: https://jenkins.4teamwork.ch/search?q=ftw.builder
 
 
