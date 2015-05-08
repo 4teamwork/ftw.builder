@@ -515,7 +515,3 @@ Copyright
 This package is copyright by `4teamwork <http://www.4teamwork.ch/>`_.
 
 ``ftw.builder`` is licensed under GNU General Public License, version 2.
-
-.. image:: https://cruel-carlota.pagodabox.com/0fd497302fbfecd53b8e5d608e3b7900
-   :alt: githalytics.com
-   :target: http://githalytics.com/4teamwork/ftw.builder
