@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.6.1 (unreleased)
+1.6.1 (2015-05-20)
 ------------------
 
 - Package builder: update pkg_resources working set when loading package.
