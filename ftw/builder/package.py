@@ -17,7 +17,7 @@ SETUP_PY_TEMPLATE = """
 from setuptools import setup, find_packages
 
 setup(name='{name}',
-      version='1.0.0.dev0',
+      version='{version}',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages={namespaces},
       include_package_data=True,
@@ -131,6 +131,7 @@ class PythonPackageBuilder(object):
         self.session = session
         self.path = None
         self.name = None
+        self.version = '1.0.0.dev0'
         self.namespaces = None
         self.package = Builder('subpackage')
         self.directories = []
@@ -152,6 +153,12 @@ class PythonPackageBuilder(object):
         self._validate_package_name(name)
         self.name = name
         self.package.with_i18n_domain(name)
+        return self
+
+    def with_version(self, version):
+        """Change the package version.
+        """
+        self.version = version
         return self
 
     def with_subpackage(self, subpackage_builder):
@@ -245,6 +252,7 @@ class PythonPackageBuilder(object):
     def _create_setup(self):
         self.with_root_file('setup.py', SETUP_PY_TEMPLATE.format(
                 name=self.name,
+                version=self.version,
                 namespaces=parent_namespaces(self.name)))
 
     def _create_namespaces(self):
