@@ -15,9 +15,6 @@ Changelog
 - Package builder: update pkg_resources working set when loading package.
   [jone]
 
--
-  [jone]
-
 - Add creation date setter to builder.
   [mbaechtold]
 
