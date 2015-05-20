@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from copy import deepcopy
 from ftw.builder import Builder
 from ftw.builder import builder_registry
 from ftw.builder import create
@@ -6,6 +7,7 @@ from ftw.builder.utils import parent_namespaces
 from path import Path
 from zope.configuration import xmlconfig
 import imp
+import pkg_resources
 import stat
 import subprocess
 import sys
@@ -70,9 +72,12 @@ class Package(object):
 
     def __enter__(self):
         sys.path.insert(0, self.root_path)
+        self._original_working_set = pkg_resources.working_set
+        pkg_resources.working_set = pkg_resources.WorkingSet._build_master()
         return self
 
     def __exit__(self, type, value, tb):
+        pkg_resources.working_set = self._original_working_set
         sys.path.remove(self.root_path)
         modules_to_remove = filter(lambda name: name.startswith(self.name),
                                    sys.modules)
