@@ -4,6 +4,7 @@ from ftw.builder.testing import TEMP_DIRECTORY_LAYER
 from path import Path
 from unittest2 import TestCase
 import inspect
+import pkg_resources
 
 
 class TestPackageBuilder(TestCase):
@@ -131,6 +132,19 @@ class TestPackageBuilder(TestCase):
         with package.imported() as module:
             self.assertTrue(inspect.ismodule(module))
             self.assertEqual(path.joinpath('the', 'package'), Path(module.__file__).dirname())
+
+    def test_pkg_resources_working_set_is_updated(self):
+        path = self.layer['temp_directory'].joinpath('the.package')
+        package = create(Builder('python package').named('the.package').at_path(path))
+
+        with self.assertRaises(pkg_resources.DistributionNotFound):
+            pkg_resources.get_distribution('the.package')
+
+        with package.imported():
+            self.assertTrue(pkg_resources.get_distribution('the.package'))
+
+        with self.assertRaises(pkg_resources.DistributionNotFound):
+            pkg_resources.get_distribution('the.package')
 
     def test_create_a_directory_in_the_root(self):
         path = self.layer['temp_directory'].joinpath('the.package')
