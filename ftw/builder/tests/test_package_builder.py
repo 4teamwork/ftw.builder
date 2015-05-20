@@ -208,6 +208,20 @@ class TestPackageBuilder(TestCase):
         self.assertIn('<browser:page name="hello-world"/>',
                       package.package_path.joinpath('configure.zcml').text())
 
+    def test_package_version(self):
+        with create(Builder('python package')
+                    .named('the.package')
+                    .at_path(self.layer['temp_directory'])).imported():
+            self.assertEquals('1.0.0.dev0',
+                              pkg_resources.get_distribution('the.package').version)
+
+        with create(Builder('python package')
+                    .named('the.package')
+                    .with_version('1.2.3')
+                    .at_path(self.layer['temp_directory'])).imported():
+            self.assertEquals('1.2.3',
+                              pkg_resources.get_distribution('the.package').version)
+
 
 class TestNamespacePackage(TestCase):
     layer = TEMP_DIRECTORY_LAYER
