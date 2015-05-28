@@ -5,6 +5,9 @@ Changelog
 1.6.2 (unreleased)
 ------------------
 
+- Genericsetup builder: fix error when creating same folder multiple times.
+  [jone]
+
 - Package builder: make package version configurable.
   [jone]
 

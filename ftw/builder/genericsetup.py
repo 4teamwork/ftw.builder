@@ -102,7 +102,7 @@ class GenericSetupBuilder(object):
         map(create, self.upgrades)
 
         for relative_path in self.directories:
-            self.path.joinpath(relative_path).makedirs()
+            self.path.joinpath(relative_path).makedirs_p()
 
         for path, contents in self.files:
             self.path.joinpath(path).write_text(contents)
