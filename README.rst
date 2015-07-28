@@ -486,6 +486,32 @@ The ZCML builder builds a ZCML file:
            .with_node('i18n:registerTranslations', directory='locales'))
 
 
+Portlet builder
+~~~~~~~~~~~~~~~
+
+The ``ftw.builder`` ships with a few builders for Plone portlets, but the
+idea is that you can easily craft your own builders for your portlets or
+extend existing builders.
+
+Example:
+
+.. code:: python
+
+    from ftw.builder import builder_registry
+    from ftw.builder.portlets import PlonePortletBuilder
+    from my.package.portlets import my_portlet
+
+    class MyPortletBuilder(PlonePortletBuilder):
+        assignment_class = my_portlet.Assignment
+
+    builder_registry.register('my portlet', MyPortletBuilder)
+
+
+The built-in builders are:
+
+- ``static portlet`` - creates a static portlet
+- ``navigation portlet`` - creates a navigation portlet
+
 
 Development / Tests
 -------------------

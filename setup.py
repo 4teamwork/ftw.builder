@@ -6,10 +6,11 @@ version = '1.6.4.dev0'
 
 tests_require = [
     'Acquisition',
+    'ftw.testbrowser',
+    'plone.api',
     'plone.app.testing',
     'unittest2',
     'zope.configuration',
-    'plone.api',
     ]
 
 
