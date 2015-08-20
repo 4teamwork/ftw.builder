@@ -5,6 +5,9 @@ Changelog
 1.6.4 (unreleased)
 ------------------
 
+- Automatically create relation-values from plone content-types while setting field-values.
+  [deiferni]
+
 - Add support for building portlets.
   [mbaechtold]
 

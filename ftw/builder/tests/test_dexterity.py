@@ -4,7 +4,7 @@ from ftw.builder import Builder
 from ftw.builder import create
 from ftw.builder import registry
 from ftw.builder.dexterity import DexterityBuilder
-from ftw.builder.testing import BUILDER_INTEGRATION_TESTING
+from ftw.builder.testing import BUILDER_FUNCTIONAL_TESTING
 from ftw.builder.tests.test_builder import obj2brain
 from plone.app.testing import login
 from plone.app.testing import setRoles
@@ -12,12 +12,18 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.dexterity.fti import DexterityFTI
+from plone.formwidget.contenttree import ObjPathSourceBinder
 from unittest2 import TestCase
+from z3c.relationfield.relation import RelationValue
+from z3c.relationfield.schema import RelationChoice
+from z3c.relationfield.schema import RelationList
 from zope import schema
 from zope.component import adapter
+from zope.component import getUtility
 from zope.component.hooks import getSite
 from zope.interface import alsoProvides
 from zope.interface import Interface
+from zope.intid.interfaces import IIntIds
 from zope.lifecycleevent.interfaces import IObjectAddedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 
@@ -42,6 +48,22 @@ class IBookSchema(Interface):
         required=False,
         default=u'test_user_1_')
 
+    relation_choice = RelationChoice(
+        title=u'Relation-Choice',
+        source=ObjPathSourceBinder(),
+        required=False,
+    )
+
+    relation_list = RelationList(
+        title=u'Relation-List',
+        default=[],
+        value_type=RelationChoice(
+            title=u"Relation-List",
+            source=ObjPathSourceBinder(),
+            ),
+        required=False,
+        )
+
 
 alsoProvides(IBookSchema, IFormFieldProvider)
 
@@ -52,7 +74,7 @@ class BookBuilder(DexterityBuilder):
 
 class DexterityBaseTestCase(TestCase):
 
-    layer = BUILDER_INTEGRATION_TESTING
+    layer = BUILDER_FUNCTIONAL_TESTING
 
     def setUp(self):
         super(DexterityBaseTestCase, self).setUp()
@@ -74,6 +96,8 @@ class DexterityBaseTestCase(TestCase):
         self.old_registry = registry.builder_registry
         registry.builder_registry = registry.Registry()
         registry.builder_registry.register('book', BookBuilder)
+
+        self.intids = getUtility(IIntIds)
 
     def tearDown(self):
         registry.builder_registry = self.old_registry
@@ -135,6 +159,36 @@ class TestDexterityBuilder(DexterityBaseTestCase):
 
         self.assertEquals(creation_date, book.created())
         self.assertEquals(creation_date, obj2brain(book).created)
+
+    def test_initializes_relation_choice_relation_value_from_object(self):
+        related = create(Builder('book'))
+
+        book = create(Builder('book').having(relation_choice=related))
+        self.assertTrue(isinstance(book.relation_choice, RelationValue))
+        self.assertEqual(related, book.relation_choice.to_object)
+
+    def test_preserves_relation_choice_relation_value_instance(self):
+        related = create(Builder('book'))
+
+        book = create(Builder('book').having(
+            relation_choice=RelationValue(self.intids.getId(related))))
+        self.assertTrue(isinstance(book.relation_choice, RelationValue))
+        self.assertEqual(related, book.relation_choice.to_object)
+
+    def test_initializes_relation_list_relation_values_from_object_list(self):
+        related = create(Builder('book'))
+
+        book = create(Builder('book').having(relation_list=[related]))
+        self.assertTrue(isinstance(book.relation_list[0], RelationValue))
+        self.assertEqual(related, book.relation_list[0].to_object)
+
+    def test_preserves_relation_list_relation_value_instances(self):
+        related = create(Builder('book'))
+
+        book = create(Builder('book').having(
+            relation_list=[RelationValue(self.intids.getId(related))]))
+        self.assertTrue(isinstance(book.relation_list[0], RelationValue))
+        self.assertEqual(related, book.relation_list[0].to_object)
 
 
 @adapter(IObjectCreatedEvent)

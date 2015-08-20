@@ -83,6 +83,9 @@ class BuilderTestingLayer(PloneSandboxLayer):
     def setUpPloneSite(self, portal):
         if getFSVersionTuple() > (5, ):
             applyProfile(portal, 'plone.app.contenttypes:default')
+        else:
+            applyProfile(portal, 'plone.app.dexterity:default')
+            applyProfile(portal, 'plone.app.relationfield:default')
 
 
 BUILDER_FIXTURE = BuilderTestingLayer()
