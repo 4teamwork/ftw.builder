@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.7.1 (unreleased)
+1.7.1 (2015-08-20)
 ------------------
 
 - Add conditional import for Relationvalues since we don't always have z3c.relation.
