@@ -8,8 +8,14 @@ from plone.dexterity.utils import createContent
 from plone.dexterity.utils import getAdditionalSchemata
 from plone.dexterity.utils import iterSchemata
 from z3c.form.interfaces import IValue
+from z3c.relationfield.interfaces import IRelationChoice
+from z3c.relationfield.interfaces import IRelationList
+from z3c.relationfield.interfaces import IRelationValue
+from z3c.relationfield.relation import RelationValue
+from zope.component import getUtility
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
+from zope.intid.interfaces import IIntIds
 from zope.schema import getFieldsInOrder
 
 
@@ -68,7 +74,21 @@ class DexterityBuilder(PloneObjectBuilder):
     def set_field_values(self, obj):
         for name, field in self.iter_fields(obj):
             if name in self.arguments:
-                field.set(field.interface(obj), self.arguments.get(name))
+                value = self.arguments.get(name)
+
+                if IRelationChoice.providedBy(field):
+                    value = self._as_relation_value(value)
+                elif IRelationList.providedBy(field):
+                    value = [self._as_relation_value(item) for item in value]
+
+                field.set(field.interface(obj), value)
+
+    def _as_relation_value(self, value):
+        if IRelationValue.providedBy(value):
+            return value
+
+        intids = getUtility(IIntIds)
+        return RelationValue(intids.getId(value))
 
     def set_missing_values_for_empty_fields(self, obj):
         for name, field in self.iter_fields(obj):

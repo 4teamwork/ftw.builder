@@ -8,7 +8,9 @@ tests_require = [
     'Acquisition',
     'ftw.testbrowser',
     'plone.api',
+    'plone.app.dexterity[relations]',
     'plone.app.testing',
+    'plone.formwidget.contenttree',
     'unittest2',
     'zope.configuration',
     ]
