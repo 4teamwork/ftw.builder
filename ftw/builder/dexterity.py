@@ -1,4 +1,5 @@
 from Acquisition import aq_base
+from ftw.builder import HAS_RELATION
 from ftw.builder.builder import PloneObjectBuilder
 from operator import methodcaller
 from plone.app.dexterity.behaviors.metadata import IOwnership
@@ -8,16 +9,18 @@ from plone.dexterity.utils import createContent
 from plone.dexterity.utils import getAdditionalSchemata
 from plone.dexterity.utils import iterSchemata
 from z3c.form.interfaces import IValue
-from z3c.relationfield.interfaces import IRelationChoice
-from z3c.relationfield.interfaces import IRelationList
-from z3c.relationfield.interfaces import IRelationValue
-from z3c.relationfield.relation import RelationValue
+
 from zope.component import getUtility
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
-from zope.intid.interfaces import IIntIds
 from zope.schema import getFieldsInOrder
 
+if HAS_RELATION:
+    from z3c.relationfield.interfaces import IRelationChoice
+    from z3c.relationfield.interfaces import IRelationList
+    from z3c.relationfield.interfaces import IRelationValue
+    from z3c.relationfield.relation import RelationValue
+    from zope.intid.interfaces import IIntIds
 
 none_marker = object()
 
@@ -76,9 +79,9 @@ class DexterityBuilder(PloneObjectBuilder):
             if name in self.arguments:
                 value = self.arguments.get(name)
 
-                if IRelationChoice.providedBy(field):
+                if HAS_RELATION and IRelationChoice.providedBy(field):
                     value = self._as_relation_value(value)
-                elif IRelationList.providedBy(field):
+                elif HAS_RELATION and IRelationList.providedBy(field):
                     value = [self._as_relation_value(item) for item in value]
 
                 field.set(field.interface(obj), value)

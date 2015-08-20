@@ -7,6 +7,13 @@ except pkg_resources.DistributionNotFound:
 else:
     HAS_DEXTERITY = True
 
+try:
+    pkg_resources.get_distribution('z3c.relationfield')
+except pkg_resources.DistributionNotFound:
+    HAS_RELATION = False
+else:
+    HAS_RELATION = True
+
 from ftw.builder.registry import builder_registry
 
 from ftw.builder.builder import Builder
