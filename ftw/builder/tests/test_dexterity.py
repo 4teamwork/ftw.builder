@@ -64,8 +64,13 @@ class IBookSchema(Interface):
         required=False,
         )
 
-
 alsoProvides(IBookSchema, IFormFieldProvider)
+
+
+class IAnnotationStored(Interface):
+    some_field = schema.TextLine(title=u"Some field", default=u"default value")
+
+alsoProvides(IAnnotationStored, IFormFieldProvider)
 
 
 class BookBuilder(DexterityBuilder):
@@ -88,7 +93,8 @@ class DexterityBaseTestCase(TestCase):
         self.fti.schema = 'ftw.builder.tests.test_dexterity.IBookSchema'
         self.fti.behaviors = (
             'plone.app.dexterity.behaviors.metadata.IPublication',
-            'plone.app.dexterity.behaviors.metadata.IOwnership')
+            'plone.app.dexterity.behaviors.metadata.IOwnership',
+            'ftw.builder.tests.test_dexterity.IAnnotationStored',)
 
         self.portal.portal_types._setObject('Book', self.fti)
 
@@ -189,6 +195,18 @@ class TestDexterityBuilder(DexterityBaseTestCase):
             relation_list=[RelationValue(self.intids.getId(related))]))
         self.assertTrue(isinstance(book.relation_list[0], RelationValue))
         self.assertEqual(related, book.relation_list[0].to_object)
+
+    def test_stores_annotation_storage_fields_correctly(self):
+        book = create(Builder('book').having(some_field=u'foo'))
+
+        self.assertFalse(hasattr(book, 'some_field'))
+        self.assertEqual(u'foo', IAnnotationStored(book).some_field)
+
+    def test_initializes_annotation_storage_defaults(self):
+        book = create(Builder('book'))
+
+        self.assertFalse(hasattr(book, 'some_field'))
+        self.assertEqual(u"default value", IAnnotationStored(book).some_field)
 
 
 @adapter(IObjectCreatedEvent)
