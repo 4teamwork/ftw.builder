@@ -13,6 +13,8 @@ from plone.app.testing import TEST_USER_NAME
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.dexterity.fti import DexterityFTI
 from plone.formwidget.contenttree import ObjPathSourceBinder
+from Products.CMFPlone.utils import getFSVersionTuple
+from unittest2 import skipIf
 from unittest2 import TestCase
 from z3c.relationfield.relation import RelationValue
 from z3c.relationfield.schema import RelationChoice
@@ -196,12 +198,18 @@ class TestDexterityBuilder(DexterityBaseTestCase):
         self.assertTrue(isinstance(book.relation_list[0], RelationValue))
         self.assertEqual(related, book.relation_list[0].to_object)
 
+    @skipIf(getFSVersionTuple() >= (5,),
+            'default value lookup is broken in plone5 and ignores annotation '
+            'storage')
     def test_stores_annotation_storage_fields_correctly(self):
         book = create(Builder('book').having(some_field=u'foo'))
 
         self.assertFalse(hasattr(book, 'some_field'))
         self.assertEqual(u'foo', IAnnotationStored(book).some_field)
 
+    @skipIf(getFSVersionTuple() >= (5,),
+            'default value lookup is broken in plone5 and ignores annotation '
+            'storage')
     def test_initializes_annotation_storage_defaults(self):
         book = create(Builder('book'))
 
