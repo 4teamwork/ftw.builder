@@ -5,14 +5,15 @@ from operator import methodcaller
 from plone.app.dexterity.behaviors.metadata import IOwnership
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.utils import addContentToContainer
-from plone.dexterity.utils import createContent
 from plone.dexterity.utils import getAdditionalSchemata
 from plone.dexterity.utils import iterSchemata
 from z3c.form.interfaces import IValue
-
+from zope.component import createObject
 from zope.component import getUtility
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
+from zope.event import notify
+from zope.lifecycleevent import ObjectCreatedEvent
 from zope.schema import getFieldsInOrder
 
 if HAS_RELATION:
@@ -27,10 +28,20 @@ none_marker = object()
 
 class DexterityBuilder(PloneObjectBuilder):
 
+    basic_attributes = ('title', 'id',)
+
     def __init__(self, session):
         super(DexterityBuilder, self).__init__(session)
         self.checkConstraints = False
         self.set_default_values = True
+
+    @property
+    def creation_arguments(self):
+        creation_arguments = {}
+        for key in self.basic_attributes:
+            if key in self.arguments:
+                creation_arguments[key] = self.arguments[key]
+        return creation_arguments
 
     def without_defaults(self):
         self.set_default_values = False
@@ -46,9 +57,33 @@ class DexterityBuilder(PloneObjectBuilder):
         self.after_create(obj)
         return obj
 
+    def _create_content(self):
+        """Create object almost the same way as dexterity.utils.createContent
+        but only set basic attributes and do not fire a created event yet.
+
+        """
+        fti = getUtility(IDexterityFTI, name=self.portal_type)
+        content = createObject(fti.factory, **self.creation_arguments)
+
+        # Note: The factory may have done this already, but we want to be sure
+        # that the created type has the right portal type. It is possible
+        # to re-define a type through the web that uses the factory from an
+        # existing type, but wants a unique portal_type!
+        content.portal_type = fti.getId()
+        return content
+
     def create_object(self):
+        """Creates an instance of our dexterity content type.
+
+        Performs the following actions in order:
+        - Create the instance
+        - Set field values and default values
+        - Fire a created event
+        - Add content to its container
+
+        """
         self.insert_field_default_values()
-        content = createContent(self.portal_type, **self.arguments)
+        content = self._create_content()
 
         # Acquisition wrap content temporarily to make sure schema
         # interfaces can be adapted to `content`
@@ -57,6 +92,7 @@ class DexterityBuilder(PloneObjectBuilder):
         self.set_missing_values_for_empty_fields(content)
         # Remove temporary acquisition wrapper
         content = aq_base(content)
+        notify(ObjectCreatedEvent(content))
 
         obj = addContentToContainer(
             self.container,

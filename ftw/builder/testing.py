@@ -80,6 +80,21 @@ class BuilderTestingLayer(PloneSandboxLayer):
             '</configure>',
             context=configurationContext)
 
+        # register behavior
+        xmlconfig.string(
+            '<configure xmlns="http://namespaces.zope.org/zope"'
+            '           xmlns:plone="http://namespaces.plone.org/plone">'
+            '    <include package="zope.component" file="meta.zcml" />'
+            '    <include package="plone.behavior" file="meta.zcml" />'
+            '    <include package="zope.annotation" />'
+            '    <plone:behavior'
+            '        title="Annotation behavior"'
+            '        provides="ftw.builder.tests.test_dexterity.IAnnotationStored"'
+            '        factory="plone.behavior.AnnotationStorage"'
+            '    />'
+            '</configure>',
+            context=configurationContext)
+
     def setUpPloneSite(self, portal):
         if getFSVersionTuple() > (5, ):
             applyProfile(portal, 'plone.app.contenttypes:default')

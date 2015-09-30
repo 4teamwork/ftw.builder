@@ -5,7 +5,10 @@ Changelog
 1.7.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- DX-Builder: Initialize attributes only with set_field_values.
+  No longer pass all arguments to createContent to avoid setting fields that
+  are stored in annotations as attributes as well.
+  [deiferni]
 
 
 1.7.1 (2015-08-20)
