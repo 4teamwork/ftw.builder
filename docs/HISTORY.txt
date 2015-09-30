@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.7.2 (unreleased)
+1.7.2 (2015-09-30)
 ------------------
 
 - DX-Builder: Initialize attributes only with set_field_values.
