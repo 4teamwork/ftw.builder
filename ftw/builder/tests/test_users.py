@@ -28,6 +28,15 @@ class TestUserBuilder(IntegrationTestCase):
              'fullname': user.getProperty('fullname'),
              'email': user.getProperty('email')})
 
+    def test_user_can_be_created_in_groups(self):
+        create(Builder('group').with_groupid('foo'))
+        create(Builder('group').with_groupid('bar'))
+        create(Builder('user').named('Hans', 'Peter').in_groups('foo', 'bar'))
+
+        portal_groups = getToolByName(self.portal, 'portal_groups')
+        self.assertEqual(['hans.peter'], portal_groups.getGroupMembers('foo'))
+        self.assertEqual(['hans.peter'], portal_groups.getGroupMembers('bar'))
+
     def test_first_and_lastname_are_capitalized(self):
         user = create(Builder('user').named('hans-peter', 'linder'))
         self.assertEquals('Linder Hans-Peter', user.getProperty('fullname'))
