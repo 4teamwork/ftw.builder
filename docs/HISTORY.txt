@@ -5,7 +5,8 @@ Changelog
 1.7.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- UserBuilder: add method to create a user within specified groups.
+  [deiferni]
 
 
 1.7.2 (2015-09-30)

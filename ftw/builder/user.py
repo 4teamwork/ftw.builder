@@ -26,6 +26,7 @@ class UserBuilder(object):
         self.password = DEFAULT_PASSWORD
         self.roles = ['Member']
         self.local_roles = {}
+        self.groupids = set()
 
     def with_userid(self, userid):
         self.userid = userid
@@ -44,6 +45,10 @@ class UserBuilder(object):
             self.roles = roles
         else:
             self.local_roles[context] = roles
+        return self
+
+    def in_groups(self, *groupids):
+        self.groupids.update(groupids)
         return self
 
     def named(self, firstname, lastname):
@@ -68,6 +73,7 @@ class UserBuilder(object):
         mtool = getToolByName(self.portal, 'portal_membership')
         user = regtool.addMember(userid, password, (), properties=properties)
         self.set_roles(user.getId(), roles)
+        self.set_groups(user.getId())
         return mtool.getMemberById(userid)
 
     def set_roles(self, userid, roles):
@@ -77,6 +83,14 @@ class UserBuilder(object):
         for context, roles in self.local_roles.items():
             context.manage_setLocalRoles(userid, tuple(roles))
             context.reindexObjectSecurity()
+
+    def set_groups(self, userid):
+        if not self.groupids:
+            return
+
+        portal_groups = getToolByName(self.portal, 'portal_groups')
+        for groupid in self.groupids:
+            portal_groups.addPrincipalToGroup(userid, groupid)
 
     def before_create(self):
         self.update_properties()
