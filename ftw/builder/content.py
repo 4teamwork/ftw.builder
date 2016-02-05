@@ -56,6 +56,10 @@ class FileBuilder(DefaultContentBuilder):
         return self
 
     def _attach_at_file(self, content, name):
+        if isinstance(content, unicode):
+            content = content.encode('utf-8')
+        if isinstance(name, unicode):
+            name = name.encode('utf-8')
         data = StringIO(content)
         data.filename = name
         self.attach(data)

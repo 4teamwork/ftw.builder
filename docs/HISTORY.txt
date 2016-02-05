@@ -5,7 +5,7 @@ Changelog
 1.7.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix encoding problem when creating AT blobs. [jone]
 
 
 1.7.3 (2015-12-11)
