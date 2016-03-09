@@ -112,6 +112,7 @@ class DexterityBuilder(PloneObjectBuilder):
 
     def set_field_values(self, obj):
         for name, field in self.iter_fields(obj):
+
             if name in self.arguments:
                 value = self.arguments.get(name)
 
@@ -184,6 +185,9 @@ class DexterityBuilder(PloneObjectBuilder):
 
         for schemata in schematas:
             for name, field in getFieldsInOrder(schemata):
+                if hasattr(field, 'readonly') and field.readonly:
+                    continue
+
                 yield (name, field)
 
     def iter_schemata_for_protal_type(self, portal_type):

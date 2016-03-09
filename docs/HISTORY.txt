@@ -5,6 +5,9 @@ Changelog
 1.7.4 (unreleased)
 ------------------
 
+- Fix setting values for dexterity-readonly fields.
+  [elioschmutz]
+
 - Fix encoding problem when creating AT blobs. [jone]
 
 
