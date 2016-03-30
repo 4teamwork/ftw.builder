@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.7.4 (unreleased)
+1.7.4 (2016-03-30)
 ------------------
 
 - Fix setting values for dexterity-readonly fields.
