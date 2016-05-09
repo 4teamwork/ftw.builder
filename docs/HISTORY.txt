@@ -5,7 +5,9 @@ Changelog
 1.7.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- DX: Bind zope.schema fields when determining default values in order to
+  have a context (i.e. container) to pass to an IContextAwareDefaultFactory.
+  [lgraf]
 
 
 1.7.4 (2016-03-30)

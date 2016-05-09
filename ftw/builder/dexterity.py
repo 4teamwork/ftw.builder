@@ -160,7 +160,10 @@ class DexterityBuilder(PloneObjectBuilder):
         if default is not None:
             value = default.get()
         else:
-            value = getattr(field, 'default', None)
+            # Bind field so that for an IContextAwareDefaultFactory it
+            # gets passed a context (i.e. the container)
+            bound_field = field.bind(self.container)
+            value = getattr(bound_field, 'default', None)
 
         # The default value of the 'creators' field returns a tuple
         # of strings instead of a tuple of unicodes.
