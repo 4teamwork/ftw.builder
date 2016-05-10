@@ -1,3 +1,4 @@
+from Acquisition import aq_base
 from datetime import datetime
 from DateTime import DateTime
 from ftw.builder import Builder
@@ -25,13 +26,24 @@ from zope.component import getUtility
 from zope.component.hooks import getSite
 from zope.interface import alsoProvides
 from zope.interface import Interface
+from zope.interface import provider
 from zope.intid.interfaces import IIntIds
 from zope.lifecycleevent.interfaces import IObjectAddedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
+from zope.schema.interfaces import IContextAwareDefaultFactory
 
 
 class IFoo(Interface):
     pass
+
+
+def topic_default():
+    return u'Fantasy'
+
+
+@provider(IContextAwareDefaultFactory)
+def container_title_default(container):
+    return aq_base(container).title
 
 
 class IBookSchema(Interface):
@@ -56,6 +68,16 @@ class IBookSchema(Interface):
         required=False,
     )
 
+    topic = schema.TextLine(
+        title=u'Topic',
+        required=False,
+        defaultFactory=topic_default)
+
+    container_title = schema.TextLine(
+        title=u'Container Title',
+        required=False,
+        defaultFactory=container_title_default)
+
     relation_list = RelationList(
         title=u'Relation-List',
         default=[],
@@ -65,6 +87,7 @@ class IBookSchema(Interface):
             ),
         required=False,
         )
+
 
 alsoProvides(IBookSchema, IFormFieldProvider)
 
@@ -155,6 +178,18 @@ class TestDexterityBuilder(DexterityBaseTestCase):
 
         self.assertEquals(u'test_user_1_', book.author)
         self.assertEquals((u'test_user_1_', ), book.listCreators())
+
+    def test_sets_default_values_from_default_factories(self):
+        book = create(Builder('book')
+                     .having(title=u'Testtitle'))
+
+        self.assertEquals(u'Fantasy', book.topic)
+
+    def test_sets_default_values_from_context_aware_default_factories(self):
+        book = create(Builder('book')
+                     .having(title=u'Testtitle'))
+
+        self.assertEquals(u'Plone site', book.container_title)
 
     def test_object_providing_interface(self):
         book = create(Builder('book').providing(IFoo))
