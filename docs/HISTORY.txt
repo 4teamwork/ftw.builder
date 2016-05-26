@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.7.5 (unreleased)
+1.7.5 (2016-05-26)
 ------------------
 
 - DX: Bind zope.schema fields when determining default values in order to
