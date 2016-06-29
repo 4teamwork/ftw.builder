@@ -1,3 +1,5 @@
+from contextlib import contextmanager
+
 
 class Registry(object):
 
@@ -16,6 +18,12 @@ class Registry(object):
             raise KeyError('Unkown builder "%s"' % name)
 
         return self.builders[name]
+
+    @contextmanager
+    def temporary_builder_config(self):
+        builders = self.builders.copy()
+        yield
+        self.builders = builders
 
 
 builder_registry = Registry()

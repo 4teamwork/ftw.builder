@@ -1,46 +1,53 @@
+from contextlib import contextmanager
 from ftw.builder import builder_registry
-from ftw.builder import HAS_DEXTERITY
 from ftw.builder.archetypes import ArchetypesBuilder
+from ftw.builder.dexterity import DexterityBuilder
+from plone.namedfile.interfaces import HAVE_BLOBS
 from Products.CMFPlone.utils import getFSVersionTuple
 from StringIO import StringIO
 
-if HAS_DEXTERITY:
-    from ftw.builder.dexterity import DexterityBuilder
 
-    from plone.namedfile.interfaces import HAVE_BLOBS
-    if HAVE_BLOBS:
-        from plone.namedfile.file import NamedBlobFile as NamedFile
-    else:
-        from plone.namedfile.file import NamedFile
-
-
-if getFSVersionTuple() > (5, ):
-    DefaultContentBuilder = DexterityBuilder
+if HAVE_BLOBS:
+    from plone.namedfile.file import NamedBlobFile as NamedFile
 else:
-    DefaultContentBuilder = ArchetypesBuilder
+    from plone.namedfile.file import NamedFile
 
 
-class FolderBuilder(DefaultContentBuilder):
+# ==== Folder ====
 
+class FolderBuilderMixin(object):
     portal_type = 'Folder'
 
-builder_registry.register('folder', FolderBuilder)
+
+class ATFolderBuilder(FolderBuilderMixin, ArchetypesBuilder):
+    pass
 
 
-class PageBuilder(DefaultContentBuilder):
+class DXFolderBuilder(FolderBuilderMixin, DexterityBuilder):
+    pass
 
+
+# ==== Page / Document ====
+
+class PageBuilderMixin(object):
     portal_type = 'Document'
 
-builder_registry.register('page', PageBuilder)
-builder_registry.register('document', PageBuilder)
+
+class ATPageBuilder(PageBuilderMixin, ArchetypesBuilder):
+    pass
 
 
-class FileBuilder(DefaultContentBuilder):
+class DXPageBuilder(PageBuilderMixin, DexterityBuilder):
+    pass
 
+
+# ==== File ====
+
+class FileBuilderMixin(object):
     portal_type = 'File'
 
     def attach_file_containing(self, content, name=u"test.doc"):
-        if HAS_DEXTERITY and issubclass(self.__class__, DexterityBuilder):
+        if issubclass(self.__class__, DexterityBuilder):
             return self._attach_dx_file(content, name)
         else:
             if isinstance(name, unicode):
@@ -69,15 +76,22 @@ class FileBuilder(DefaultContentBuilder):
         self.attach(NamedFile(data=content, filename=name))
         return self
 
-builder_registry.register('file', FileBuilder)
+
+class ATFileBuilder(FileBuilderMixin, ArchetypesBuilder):
+    pass
 
 
-class ImageBuilder(FileBuilder):
+class DXFileBuilder(FileBuilderMixin, DexterityBuilder):
+    pass
 
+
+# ==== Image ====
+
+class ImageBuilderMixin(FileBuilderMixin):
     portal_type = 'Image'
 
     def attach_file_containing(self, content, name=u"image.gif"):
-        return super(ImageBuilder, self) \
+        return super(ImageBuilderMixin, self) \
             .attach_file_containing(content, name)
 
     def with_dummy_content(self):
@@ -95,10 +109,18 @@ class ImageBuilder(FileBuilder):
             self.arguments['file'] = file_
         return self
 
-builder_registry.register('image', ImageBuilder)
+
+class ATImageBuilder(ImageBuilderMixin, ArchetypesBuilder):
+    pass
 
 
-class CollectionBuilder(DefaultContentBuilder):
+class DXImageBuilder(ImageBuilderMixin, DexterityBuilder):
+    pass
+
+
+# ==== Collection ====
+
+class CollectionBuilderMixin(object):
     portal_type = 'Collection'
 
     def from_query(self, query):
@@ -149,5 +171,52 @@ class CollectionBuilder(DefaultContentBuilder):
         return self.having(query=querystringthing)
 
 
-builder_registry.register('collection', CollectionBuilder)
-builder_registry.register('topic', CollectionBuilder)
+class ATCollectionBuilder(CollectionBuilderMixin, ArchetypesBuilder):
+    pass
+
+
+class DXCollectionBuilder(CollectionBuilderMixin, DexterityBuilder):
+    pass
+
+
+# ==== Registration ====
+
+
+def register_at_content_builders(**kwargs):
+    builder_registry.register('folder', ATFolderBuilder, **kwargs)
+    builder_registry.register('page', ATPageBuilder, **kwargs)
+    builder_registry.register('document', ATPageBuilder, **kwargs)
+    builder_registry.register('file', ATFileBuilder, **kwargs)
+    builder_registry.register('image', ATImageBuilder, **kwargs)
+    builder_registry.register('collection', ATCollectionBuilder, **kwargs)
+    builder_registry.register('topic', ATCollectionBuilder, **kwargs)
+
+
+def register_dx_content_builders(**kwargs):
+    builder_registry.register('folder', DXFolderBuilder, **kwargs)
+    builder_registry.register('page', DXPageBuilder, **kwargs)
+    builder_registry.register('document', DXPageBuilder, **kwargs)
+    builder_registry.register('file', DXFileBuilder, **kwargs)
+    builder_registry.register('image', DXImageBuilder, **kwargs)
+    builder_registry.register('collection', DXCollectionBuilder, **kwargs)
+    builder_registry.register('topic', DXCollectionBuilder, **kwargs)
+
+
+if getFSVersionTuple() > (5, ):
+    register_dx_content_builders()
+else:
+    register_at_content_builders()
+
+
+@contextmanager
+def at_content_builders_registered():
+    with builder_registry.temporary_builder_config():
+        register_at_content_builders(force=True)
+        yield
+
+
+@contextmanager
+def dx_content_builders_registered():
+    with builder_registry.temporary_builder_config():
+        register_dx_content_builders(force=True)
+        yield

@@ -1,14 +1,15 @@
 from ftw.builder import Builder
 from ftw.builder import create
-from ftw.builder import HAS_DEXTERITY
+from ftw.builder.archetypes import ArchetypesBuilder
+from ftw.builder.content import at_content_builders_registered
+from ftw.builder.content import dx_content_builders_registered
+from ftw.builder.dexterity import DexterityBuilder
 from ftw.builder.tests import IntegrationTestCase
 from operator import methodcaller
+from plone.dexterity.interfaces import IDexterityContent
+from plone.rfc822.interfaces import IPrimaryFieldInfo
 from Products.CMFCore.utils import getToolByName
 from zope.interface import Interface
-
-if HAS_DEXTERITY:
-    from plone.dexterity.interfaces import IDexterityContent
-    from plone.rfc822.interfaces import IPrimaryFieldInfo
 
 
 class IFoo(Interface):
@@ -16,7 +17,7 @@ class IFoo(Interface):
 
 
 def get_file(obj):
-    if HAS_DEXTERITY and IDexterityContent.providedBy(obj):
+    if IDexterityContent.providedBy(obj):
         return IPrimaryFieldInfo(obj).value
     else:
         return obj.getFile()
@@ -177,3 +178,33 @@ class TestCollectionBuilder(IntegrationTestCase):
             sorted(['The Page', 'The Collection']),
             sorted(map(methodcaller('Title'),
                        collection.results())))
+
+
+class TestContentBuilderImplementationSwitch(IntegrationTestCase):
+
+    def test_switch_to_archetypes_builders(self):
+        with dx_content_builders_registered():
+            self.assert_builders_are_instances_of(DexterityBuilder)
+
+            with at_content_builders_registered():
+                self.assert_builders_are_instances_of(ArchetypesBuilder)
+
+            self.assert_builders_are_instances_of(DexterityBuilder)
+
+    def test_switch_to_dexterity_builders(self):
+        with at_content_builders_registered():
+            self.assert_builders_are_instances_of(ArchetypesBuilder)
+
+            with dx_content_builders_registered():
+                self.assert_builders_are_instances_of(DexterityBuilder)
+
+            self.assert_builders_are_instances_of(ArchetypesBuilder)
+
+    def assert_builders_are_instances_of(self, base_builder_class):
+        self.assertIsInstance(Builder('folder'), base_builder_class)
+        self.assertIsInstance(Builder('page'), base_builder_class)
+        self.assertIsInstance(Builder('document'), base_builder_class)
+        self.assertIsInstance(Builder('file'), base_builder_class)
+        self.assertIsInstance(Builder('image'), base_builder_class)
+        self.assertIsInstance(Builder('collection'), base_builder_class)
+        self.assertIsInstance(Builder('topic'), base_builder_class)
