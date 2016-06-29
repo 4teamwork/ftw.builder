@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from ftw.builder import builder_registry
 from ftw.builder.archetypes import ArchetypesBuilder
 from ftw.builder.dexterity import DexterityBuilder
@@ -205,3 +206,17 @@ if getFSVersionTuple() > (5, ):
     register_dx_content_builders()
 else:
     register_at_content_builders()
+
+
+@contextmanager
+def at_content_builders_registered():
+    with builder_registry.temporary_builder_config():
+        register_at_content_builders(force=True)
+        yield
+
+
+@contextmanager
+def dx_content_builders_registered():
+    with builder_registry.temporary_builder_config():
+        register_dx_content_builders(force=True)
+        yield

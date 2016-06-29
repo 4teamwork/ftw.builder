@@ -5,6 +5,8 @@ Changelog
 1.7.6 (unreleased)
 ------------------
 
+- Add content manager for switching to AT / DX content builders. [jone]
+
 - Require dexterity. [jone]
 
 

@@ -166,17 +166,37 @@ setting basic options:
 Default builders
 ~~~~~~~~~~~~~~~~
 
-The ``ftw.builder`` ships with some builders for some default Plone (Archetypes)
+The ``ftw.builder`` ships with some builders for some default Plone
 content types, but the idea is that you can easily craft your own builders for
 your types or extend existing builders.
 
 The built-in builders are:
 
-- ``folder`` - creates an Archetypes folder
-- ``page`` (or ``Document``) - creates an Archetypes page (alias Document)
+- ``folder`` - creates an folder
+- ``page`` (or ``document``) - creates an page (alias Document)
 - ``file`` - creates a File
-- ``image`` - creates an Archetypes Image
+- ``image`` - creates an Image
+- ``collection`` (or ``topic``) - creates a collection
 
+There are two builder implementations, an Archetypes (Plone < 5) and a
+Dexterity (Plone >= 5) implementation.
+When using ``plone.app.contenttypes`` with Plone 4, you may want to switch
+the builders to dexterity:
+
+.. code:: python
+
+    from ftw.builder.content import at_content_builders_registered
+    from ftw.builder.content import dx_content_builders_registered
+    from ftw.builder.content import register_at_content_builders
+    from ftw.builder.content import register_dx_content_builders
+
+
+    # permanently
+    register_dx_content_builders(force=True)
+
+    # temporary
+    with dx_content_builders_registered():
+        # do stuff
 
 
 Attaching files
