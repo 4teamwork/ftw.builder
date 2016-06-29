@@ -1,14 +1,11 @@
 from ftw.builder import Builder
 from ftw.builder import create
-from ftw.builder import HAS_DEXTERITY
 from ftw.builder.tests import IntegrationTestCase
 from operator import methodcaller
+from plone.dexterity.interfaces import IDexterityContent
+from plone.rfc822.interfaces import IPrimaryFieldInfo
 from Products.CMFCore.utils import getToolByName
 from zope.interface import Interface
-
-if HAS_DEXTERITY:
-    from plone.dexterity.interfaces import IDexterityContent
-    from plone.rfc822.interfaces import IPrimaryFieldInfo
 
 
 class IFoo(Interface):
@@ -16,7 +13,7 @@ class IFoo(Interface):
 
 
 def get_file(obj):
-    if HAS_DEXTERITY and IDexterityContent.providedBy(obj):
+    if IDexterityContent.providedBy(obj):
         return IPrimaryFieldInfo(obj).value
     else:
         return obj.getFile()

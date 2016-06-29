@@ -1,17 +1,15 @@
 from ftw.builder import builder_registry
-from ftw.builder import HAS_DEXTERITY
 from ftw.builder.archetypes import ArchetypesBuilder
+from ftw.builder.dexterity import DexterityBuilder
 from Products.CMFPlone.utils import getFSVersionTuple
 from StringIO import StringIO
+from plone.namedfile.interfaces import HAVE_BLOBS
 
-if HAS_DEXTERITY:
-    from ftw.builder.dexterity import DexterityBuilder
 
-    from plone.namedfile.interfaces import HAVE_BLOBS
-    if HAVE_BLOBS:
-        from plone.namedfile.file import NamedBlobFile as NamedFile
-    else:
-        from plone.namedfile.file import NamedFile
+if HAVE_BLOBS:
+    from plone.namedfile.file import NamedBlobFile as NamedFile
+else:
+    from plone.namedfile.file import NamedFile
 
 
 if getFSVersionTuple() > (5, ):
@@ -40,7 +38,7 @@ class FileBuilder(DefaultContentBuilder):
     portal_type = 'File'
 
     def attach_file_containing(self, content, name=u"test.doc"):
-        if HAS_DEXTERITY and issubclass(self.__class__, DexterityBuilder):
+        if issubclass(self.__class__, DexterityBuilder):
             return self._attach_dx_file(content, name)
         else:
             if isinstance(name, unicode):
