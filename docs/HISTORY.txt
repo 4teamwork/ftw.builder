@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.7.6 (unreleased)
+1.8.0 (2016-06-29)
 ------------------
 
 - Add content manager for switching to AT / DX content builders. [jone]
