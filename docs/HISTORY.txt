@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.8.1 (unreleased)
+1.8.1 (2016-06-30)
 ------------------
 
 - Fix plone.app.dexterity dependency in order to better support Plone 4.2. [jone]
