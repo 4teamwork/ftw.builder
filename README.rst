@@ -160,6 +160,7 @@ setting basic options:
 - ``in_state(review_state)`` - set the object into any review state of the workflow
   configured for this type
 - ``providing(interface1, interface2, ...)`` - let the object provide interfaces
+- ``with_property(name, value, value_type='string')`` - set a property
 
 
 

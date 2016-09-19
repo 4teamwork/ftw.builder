@@ -18,6 +18,8 @@ class ArchetypesBuilder(PloneObjectBuilder):
             self.portal_type, name, **self.arguments)
         obj = self.container.get(name)
 
+        self.set_properties(obj)
+
         if processForm:
             obj.processForm()
         return obj
