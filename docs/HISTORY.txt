@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.8.2 (unreleased)
+1.9.0 (2016-09-19)
 ------------------
 
 - Add ".with_property" method to content builders. [jone]
