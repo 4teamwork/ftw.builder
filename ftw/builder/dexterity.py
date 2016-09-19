@@ -90,6 +90,7 @@ class DexterityBuilder(PloneObjectBuilder):
         content = content.__of__(self.container)
         self.set_field_values(content)
         self.set_missing_values_for_empty_fields(content)
+        self.set_properties(content)
         # Remove temporary acquisition wrapper
         content = aq_base(content)
         notify(ObjectCreatedEvent(content))

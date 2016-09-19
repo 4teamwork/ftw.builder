@@ -5,7 +5,7 @@ Changelog
 1.8.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add ".with_property" method to content builders. [jone]
 
 
 1.8.1 (2016-06-30)

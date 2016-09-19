@@ -24,3 +24,11 @@ class TestArchetypesBuilder(IntegrationTestCase):
         self.assertTrue(
             folder.checkCreationFlag(),
             'Creation flag should be True when disabling processForm')
+
+    def test_with_property(self):
+        folder = create(Builder('folder')
+                        .with_property('layout', 'folder_contents')
+                        .with_property('foo', 3, 'int'))
+
+        self.assertEquals('folder_contents', getattr(folder, 'layout', None))
+        self.assertEquals(3, getattr(folder, 'foo', None))

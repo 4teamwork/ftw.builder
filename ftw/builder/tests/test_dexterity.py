@@ -203,6 +203,15 @@ class TestDexterityBuilder(DexterityBaseTestCase):
         self.assertEquals(creation_date, book.created())
         self.assertEquals(creation_date, obj2brain(book).created)
 
+    def test_with_property(self):
+        book = create(Builder('book')
+                      .with_property('layout', 'folder_contents')
+                      .with_property('foo', 3, 'int'))
+
+        self.assertEquals('folder_contents',
+                          getattr(aq_base(book), 'layout', None))
+        self.assertEquals(3, getattr(aq_base(book), 'foo', None))
+
     def test_initializes_relation_choice_relation_value_from_object(self):
         related = create(Builder('book'))
 

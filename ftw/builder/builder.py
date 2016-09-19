@@ -30,6 +30,7 @@ class PloneObjectBuilder(object):
         self.modification_date = None
         self.creation_date = None
         self.interfaces = []
+        self.properties = []
 
     def within(self, container):
         self.container = container
@@ -53,6 +54,10 @@ class PloneObjectBuilder(object):
 
     def with_creation_date(self, creation_date):
         self.creation_date = creation_date
+        return self
+
+    def with_property(self, name, value, value_type='string'):
+        self.properties.append((name, value, value_type))
         return self
 
     def providing(self, *interfaces):
@@ -83,6 +88,10 @@ class PloneObjectBuilder(object):
 
         if self.session.auto_commit:
             transaction.commit()
+
+    def set_properties(self, obj):
+        for property_args in self.properties:
+            obj._setProperty(*property_args)
 
     def change_workflow_state(self, obj):
         if not self.review_state:
