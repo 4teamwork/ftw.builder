@@ -387,6 +387,38 @@ the ``force`` flag:
     builder_registry.register('file', CustomFileBuilder, force=True)
 
 
+Ticking frozen clock forward on create
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+With ``ftw.testing`` it is possible to
+`freeze the time <https://github.com/4teamwork/ftw.testing#freezing-datetime-now>`_.
+
+When freezing the time and creating multiple objects, they will all end up with
+the same creation date. This can cause an inconsistent sorting order.
+
+In order to solve this problem, ``ftw.builder`` provides a ``ticking_creator``,
+which moves the clock forward every time an object is created.
+This means we have distinct, consistent creation dates.
+
+Usage example:
+
+.. code:: python
+
+    from datetime import datetime
+    from ftw.builder import Builder
+    from ftw.builder import ticking_creator
+    from ftw.testing import freeze
+
+    with freeze(datetime(2010, 1, 1)) as clock:
+        create = ticking_creator(clock, days=1)
+        self.assertEquals(DateTime(2010, 1, 1),
+                          create(Builder('folder')).created())
+        self.assertEquals(DateTime(2010, 1, 2),
+                          create(Builder('folder')).created())
+        self.assertEquals(DateTime(2010, 1, 3),
+                          create(Builder('folder')).created())
+
+
 Other builders
 --------------
 

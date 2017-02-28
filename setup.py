@@ -7,6 +7,7 @@ version = '1.9.1.dev0'
 tests_require = [
     'Acquisition',
     'ftw.testbrowser',
+    'ftw.testing',
     'plone.api',
     'plone.app.dexterity[relations]',
     'plone.app.testing',
