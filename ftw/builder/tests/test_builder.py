@@ -1,11 +1,14 @@
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from datetime import datetime
 from DateTime import DateTime
-from Products.CMFCore.utils import getToolByName
 from ftw.builder import Builder
+from ftw.builder import ticking_creator
 from ftw.builder import create
 from ftw.builder.tests import IntegrationTestCase
+from ftw.testing import freeze
 from plone import api
+from Products.CMFCore.utils import getToolByName
 
 
 def obj2brain(obj):
@@ -103,3 +106,16 @@ class TestCreatingObjects(IntegrationTestCase):
         rid = catalog.getrid(path)
         index_data = catalog.getIndexDataForRID(rid)
         return index_data.get('allowedRolesAndUsers')
+
+
+class TestTickingCreator(IntegrationTestCase):
+
+    def test(self):
+        with freeze(datetime(2010, 1, 1)) as clock:
+            create = ticking_creator(clock, days=1)
+            self.assertEquals(DateTime(2010, 1, 1),
+                              create(Builder('folder')).created())
+            self.assertEquals(DateTime(2010, 1, 2),
+                              create(Builder('folder')).created())
+            self.assertEquals(DateTime(2010, 1, 3),
+                              create(Builder('folder')).created())

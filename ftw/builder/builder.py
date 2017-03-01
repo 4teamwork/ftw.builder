@@ -11,6 +11,19 @@ def create(builder, **kwargs):
     return builder.create(**kwargs)
 
 
+def ticking_creator(clock, **forward):
+    """Returns a builder create()-function, which "ticks" an
+    ftw.testing clock forward after each created object.
+    See https://github.com/4teamwork/ftw.testing#freezing-datetimenow
+    """
+    def ticking_create(*args, **kwargs):
+        try:
+            return create(*args, **kwargs)
+        finally:
+            clock.forward(**forward)
+    return ticking_create
+
+
 def Builder(name):
     if not session.current_session:
         raise Exception('There is no builder session - you need to use the '

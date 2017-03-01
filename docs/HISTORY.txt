@@ -5,7 +5,7 @@ Changelog
 1.9.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add "ticking_creator", ticking a frozen clock. [jone]
 
 
 1.9.0 (2016-09-19)
