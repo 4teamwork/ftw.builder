@@ -77,6 +77,24 @@ class TestCreatingObjects(IntegrationTestCase):
         self.assertEquals('published',
                           obj2brain(published_folder).review_state)
 
+    def test_with_effective_date_updates_obj_and_brain(self):
+        effective = DateTime(2011, 10, 30)
+
+        folder = create(Builder('folder')
+                        .with_effective_date(effective))
+
+        self.assertEquals(effective, folder.effective())
+        self.assertEquals(effective, obj2brain(folder).effective)
+
+    def test_with_expiration_date_updates_obj_and_brain(self):
+        expires = DateTime(2017, 3, 1)
+
+        folder = create(Builder('folder')
+                        .with_expiration_date(expires))
+
+        self.assertEquals(expires, folder.expires())
+        self.assertEquals(expires, obj2brain(folder).expires)
+
     def test_with_modification_date_updates_obj_and_brain(self):
         modified = DateTime(2013, 1, 1)
 
