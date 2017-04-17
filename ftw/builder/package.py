@@ -92,6 +92,9 @@ class Package(object):
         context manager (with statement), otherwise it may raise
         an ``ImportError``.
         """
+        for name in parent_namespaces(self.name):
+            if name in sys.modules:
+                del sys.modules[name]
         return __import__(self.name, fromlist=self.name)
 
     @contextmanager

@@ -117,6 +117,14 @@ class TestPackageBuilder(TestCase):
     # for each test and the module will not be imported but taken from sys.modules.
     test_package_path_is_cleaned_up = test_package_can_be_imported
 
+    def test_importing_package_with_shared_namespace_works(self):
+        package = create(Builder('python package')
+                         .named('ftw.testpackage')
+                         .at_path(self.layer['temp_directory']))
+        with package:
+            module = package.import_package()
+            self.assertTrue(inspect.ismodule(module))
+
     def test_context_manager_returns_package_repr(self):
         package = create(Builder('python package')
                          .named('the.package')
