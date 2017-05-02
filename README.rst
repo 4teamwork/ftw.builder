@@ -46,6 +46,8 @@ Setup builder session in your testcase
 
 .. code:: python
 
+    from ftw.builder import session
+
     class TestPerson(unittest2.TestCase):
 
         def setUp(self):
