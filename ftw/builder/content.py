@@ -8,6 +8,7 @@ from StringIO import StringIO
 
 
 if HAVE_BLOBS:
+    from plone.namedfile.file import NamedImage
     from plone.namedfile.file import NamedBlobFile as NamedFile
 else:
     from plone.namedfile.file import NamedFile
@@ -107,6 +108,10 @@ class ImageBuilderMixin(FileBuilderMixin):
             self.arguments['image'] = file_
         else:
             self.arguments['file'] = file_
+        return self
+
+    def _attach_dx_file(self, content, name):
+        self.attach(NamedImage(data=content, filename=name))
         return self
 
 
