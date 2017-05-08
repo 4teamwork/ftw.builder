@@ -37,14 +37,14 @@ class TestContentBuilder(IntegrationTestCase):
         self.assertTrue(IFoo.providedBy(folder))
 
     def test_object_providing_interface_updates_catalog(self):
-        folder = create(Builder('folder').providing(IFoo))
+        create(Builder('folder').titled(u'providesIFoo').providing(IFoo))
+        create(Builder('folder').titled(u'doesnotprovideIFoo'))
 
-        catalog = getToolByName(folder, 'portal_catalog')
-        rid = catalog.getrid('/'.join(folder.getPhysicalPath()))
-        index_data = catalog.getIndexDataForRID(rid)
-
-        self.assertIn('ftw.builder.tests.test_content.IFoo',
-                      index_data['object_provides'])
+        catalog = getToolByName(self.portal, 'portal_catalog')
+        self.assertEquals(
+            ['providesIFoo'],
+            [brain.Title for brain in catalog(object_provides=IFoo.__identifier__)],
+        )
 
 
 class TestFolderBuilder(IntegrationTestCase):
