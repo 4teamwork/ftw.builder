@@ -5,6 +5,7 @@ Changelog
 1.10.1 (unreleased)
 -------------------
 
+- Make ticking creator installable globally by using as context manager. [jone]
 - Fix test: test_object_providing_interface_updates_catalog: Asks catalog instead of index (query lazyness) [tarnap]
 - Fix dexterity image builder [tarnap]
 

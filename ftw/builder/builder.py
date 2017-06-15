@@ -8,20 +8,63 @@ import transaction
 
 
 def create(builder, **kwargs):
-    return builder.create(**kwargs)
+    return CREATOR_CHAIN[0](builder, **kwargs)
 
 
 def ticking_creator(clock, **forward):
-    """Returns a builder create()-function, which "ticks" an
+    """Returns a builder create()-callable, which "ticks" an
     ftw.testing clock forward after each created object.
     See https://github.com/4teamwork/ftw.testing#freezing-datetimenow
+
+    It can be activated globally when used as context manager.
     """
-    def ticking_create(*args, **kwargs):
+    return TickingCreator(clock, **forward)
+
+
+class TickingCreator(object):
+    """The TickingCreator ticks an ftw.testing clock forward after each
+    created object.
+    See https://github.com/4teamwork/ftw.testing#freezing-datetimenow
+
+    It can be activated globally when used as context manager.
+    """
+
+    def __init__(self, clock, **forward):
+        self.clock = clock
+        self.forward = forward
+        self.parent_create = None
+
+    def __call__(self, *args, **kwargs):
         try:
-            return create(*args, **kwargs)
+            if self.parent_create is not None:
+                return self.parent_create(*args, **kwargs)
+            else:
+                return create(*args, **kwargs)
         finally:
-            clock.forward(**forward)
-    return ticking_create
+            self.clock.forward(**self.forward)
+
+    def __enter__(self):
+        """When used as context manager, the ticking creator is installed
+        globally.
+        """
+        self.parent_create = CREATOR_CHAIN[0]
+        CREATOR_CHAIN.insert(0, self)
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.parent_create = None
+        CREATOR_CHAIN.remove(self)
+
+
+def original_create(builder, **kwargs):
+    return builder.create(**kwargs)
+
+
+# The creator chain is a chain of creators, where always the creator
+# at index 0 is called.
+# When a new creator is registred which just wraps the original creator
+# it should be inserted at index 0 and delegate calls to the creator
+# at index 1. A wrapper must not access the chain when called but on setup.
+CREATOR_CHAIN = [original_create]
 
 
 def Builder(name):
