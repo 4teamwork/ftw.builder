@@ -421,6 +421,30 @@ Usage example:
                           create(Builder('folder')).created())
 
 
+It is convenient to install the ticking creator globally, so if builder
+creates objects with another builder, it also ticks the clock for the
+nested builder call.
+This can be achieved by using the ticking creator as context manager:
+
+.. code:: python
+
+    from datetime import datetime
+    from ftw.builder import Builder
+    from ftw.builder import create
+    from ftw.builder import ticking_creator
+    from ftw.testing import freeze
+
+    with freeze(datetime(2010, 1, 1)) as clock:
+        with ticking_creator(clock, days=1):
+            self.assertEquals(DateTime(2010, 1, 1),
+                              create(Builder('folder')).created())
+            self.assertEquals(DateTime(2010, 1, 2),
+                              create(Builder('folder')).created())
+            self.assertEquals(DateTime(2010, 1, 3),
+                              create(Builder('folder')).created())
+
+
+
 Other builders
 --------------
 

@@ -110,7 +110,7 @@ class TestCreatingObjects(IntegrationTestCase):
 
 class TestTickingCreator(IntegrationTestCase):
 
-    def test(self):
+    def test_ticking_creator_function(self):
         with freeze(datetime(2010, 1, 1)) as clock:
             create = ticking_creator(clock, days=1)
             self.assertEquals(DateTime(2010, 1, 1),
@@ -119,3 +119,13 @@ class TestTickingCreator(IntegrationTestCase):
                               create(Builder('folder')).created())
             self.assertEquals(DateTime(2010, 1, 3),
                               create(Builder('folder')).created())
+
+    def test_activating_ticking_creator_in_context_manager(self):
+        with freeze(datetime(2010, 1, 1)) as clock:
+            with ticking_creator(clock, days=1):
+                self.assertEquals(DateTime(2010, 1, 1),
+                                  create(Builder('folder')).created())
+                self.assertEquals(DateTime(2010, 1, 2),
+                                  create(Builder('folder')).created())
+                self.assertEquals(DateTime(2010, 1, 3),
+                                  create(Builder('folder')).created())
