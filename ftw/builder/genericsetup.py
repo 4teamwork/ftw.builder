@@ -165,7 +165,7 @@ class PloneUpgradeStepBuilder(object):
         self.calling(noop_upgrade)
 
     def upgrading(self, from_, to):
-        """Set the source and destionation version for this upgrade step.
+        """Set the source and destination version for this upgrade step.
         """
         self.source_version = from_
         self.destination_version = to
@@ -217,7 +217,7 @@ class PloneUpgradeStepBuilder(object):
             raise ValueError('Source and destination versions are required.'
                              ' Use .upgrade(from, to).')
         if not self.profile_builder:
-            raise ValueError('Unkown profile for the upgrade step:'
+            raise ValueError('Unknown profile for the upgrade step:'
                              ' Use GenericSetupBuilder.with_upgrade(this)')
 
         basename = 'to{0}'.format(self.destination_version.replace('.', '_'))
