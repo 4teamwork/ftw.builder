@@ -1,5 +1,4 @@
 from contextlib import contextmanager
-from copy import deepcopy
 from ftw.builder import Builder
 from ftw.builder import builder_registry
 from ftw.builder import create
