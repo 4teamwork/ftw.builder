@@ -1,5 +1,4 @@
 from contextlib import contextmanager
-from copy import deepcopy
 from ftw.builder import Builder
 from ftw.builder import builder_registry
 from ftw.builder import create
@@ -469,7 +468,7 @@ class SubPackageBuilder(object):
     def create(self):
         if not self.path:
             if not self.parent_package or not self.name:
-                raise ValueError('Unkown target: use either .at_path()'
+                raise ValueError('Unknown target: use either .at_path()'
                                  ' or .named() and .within()')
             self.path = self.parent_package.path.joinpath(self.name)
 

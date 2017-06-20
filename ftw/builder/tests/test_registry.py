@@ -39,12 +39,12 @@ class TestRegistry(TestCase):
 
         self.assertEqual(BarBuilder, registry.get('Foo'))
 
-    def test_getting_unkown_builder_raises_KeyError(self):
+    def test_getting_unknown_builder_raises_KeyError(self):
         registry = Registry()
 
         with self.assertRaises(KeyError) as cm:
             registry.get('My Type')
 
         self.assertEquals(
-            "'Unkown builder \"My Type\"'",
+            "'Unknown builder \"My Type\"'",
             str(cm.exception))

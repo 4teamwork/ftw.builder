@@ -15,7 +15,7 @@ class Registry(object):
 
     def get(self, name):
         if name not in self.builders:
-            raise KeyError('Unkown builder "%s"' % name)
+            raise KeyError('Unknown builder "%s"' % name)
 
         return self.builders[name]
 
