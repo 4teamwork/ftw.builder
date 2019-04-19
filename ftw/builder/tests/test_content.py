@@ -9,6 +9,7 @@ from operator import methodcaller
 from plone.dexterity.interfaces import IDexterityContent
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from Products.CMFCore.utils import getToolByName
+from six.moves import map
 from zope.interface import Interface
 
 
@@ -152,8 +153,8 @@ class TestCollectionBuilder(IntegrationTestCase):
                                             'v': 'Collection'}]))
 
         self.assertEquals(['The Collection'],
-                          map(methodcaller('Title'),
-                              collection.results()))
+                          list(map(methodcaller('Title'),
+                              collection.results())))
 
     def test_creating_colleciton_from_query_with_string(self):
         create(Builder('page').titled(u'The Page'))
@@ -163,8 +164,8 @@ class TestCollectionBuilder(IntegrationTestCase):
                             .from_query({'portal_type': 'Collection'}))
 
         self.assertEquals(['The Collection'],
-                          map(methodcaller('Title'),
-                              collection.results()))
+                          list(map(methodcaller('Title'),
+                              collection.results())))
 
     def test_creating_colleciton_from_query_with_list(self):
         create(Builder('document').titled(u'The Page'))

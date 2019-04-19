@@ -5,6 +5,7 @@ from ftw.builder.dexterity import DexterityBuilder
 from plone.namedfile.interfaces import HAVE_BLOBS
 from Products.CMFPlone.utils import getFSVersionTuple
 from StringIO import StringIO
+import six
 
 
 if HAVE_BLOBS:
@@ -51,7 +52,7 @@ class FileBuilderMixin(object):
         if issubclass(self.__class__, DexterityBuilder):
             return self._attach_dx_file(content, name)
         else:
-            if isinstance(name, unicode):
+            if isinstance(name, six.text_type):
                 name = name.encode('utf-8')
             return self._attach_at_file(content, name)
 
@@ -64,9 +65,9 @@ class FileBuilderMixin(object):
         return self
 
     def _attach_at_file(self, content, name):
-        if isinstance(content, unicode):
+        if isinstance(content, six.text_type):
             content = content.encode('utf-8')
-        if isinstance(name, unicode):
+        if isinstance(name, six.text_type):
             name = name.encode('utf-8')
         data = StringIO(content)
         data.filename = name
@@ -150,7 +151,7 @@ class CollectionBuilderMixin(object):
         querystringthing = []
 
         for name, value in query.items():
-            if isinstance(value, unicode):
+            if isinstance(value, six.text_type):
                 value = value.encode('utf-8')
 
             if isinstance(value, str):

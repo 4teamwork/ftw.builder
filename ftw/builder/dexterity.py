@@ -7,6 +7,7 @@ from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.utils import addContentToContainer
 from plone.dexterity.utils import getAdditionalSchemata
 from plone.dexterity.utils import iterSchemata
+from six.moves import map
 from z3c.form.interfaces import IValue
 from zope.component import createObject
 from zope.component import getUtility

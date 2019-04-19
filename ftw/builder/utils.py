@@ -1,3 +1,4 @@
+from six.moves import map
 import inspect
 import re
 import unicodedata
@@ -47,6 +48,6 @@ def serialize_callable(callable_, *to_import):
         to_import += callable_.__bases__
 
     imports_source = '\n'.join(sorted(
-            filter(None, map(get_import_string, to_import))))
+            [_f for _f in map(get_import_string, to_import) if _f]))
     callable_source = dedent(inspect.getsource(callable_))
     return '\n\n\n'.join((imports_source, callable_source)).lstrip()

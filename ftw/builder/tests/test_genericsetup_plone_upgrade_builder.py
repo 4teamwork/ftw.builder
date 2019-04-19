@@ -82,7 +82,7 @@ class TestPloneUpgradeBuilder(TestCase):
 
     def test_with_calling_a_function(self):
         def the_upgrade(setup_context):
-            print 'YAY, we are up to date'
+            print('YAY, we are up to date')
 
         package = create(Builder('python package')
                          .named('the.package')
@@ -101,7 +101,7 @@ class TestPloneUpgradeBuilder(TestCase):
     def test_with_calling_a_class(self):
         class TheUpgrade(TestCase, tuple):
             def __init__(self, setup_context):
-                print 'This is not an upgrade and does not work...'
+                print('This is not an upgrade and does not work...')
 
         package = create(Builder('python package')
                          .named('the.package')

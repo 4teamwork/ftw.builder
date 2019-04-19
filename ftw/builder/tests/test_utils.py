@@ -1,3 +1,4 @@
+from __future__ import print_function
 from ftw.builder.utils import parent_namespaces
 from ftw.builder.utils import serialize_callable
 from unittest2 import TestCase
@@ -22,7 +23,7 @@ class TestCallableSerializer(TestCase):
         def foo(bar):
             """Prints the argument
             """
-            print 'bar is:', bar
+            print('bar is:', bar)
             return bar
 
         self.assertMultiLineEqual('''
@@ -58,8 +59,8 @@ class Foo(tuple):
 
     def test_globals_to_import_can_be_passed_as_positional_arguments(self):
         def print_docs():
-            print parent_namespaces.__docs__
-            print serialize_callable.__docs__
+            print(parent_namespaces.__docs__)
+            print(serialize_callable.__docs__)
 
         self.assertMultiLineEqual('''
 from ftw.builder.utils import parent_namespaces

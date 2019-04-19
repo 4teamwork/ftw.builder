@@ -4,6 +4,7 @@ from ftw.builder import builder_registry
 from ftw.builder import create
 from ftw.builder.utils import parent_namespaces
 from path import Path
+from six.moves import map
 from zope.configuration import xmlconfig
 import imp
 import pkg_resources
@@ -78,8 +79,8 @@ class Package(object):
     def __exit__(self, type, value, tb):
         pkg_resources.working_set = self._original_working_set
         sys.path.remove(self.root_path)
-        modules_to_remove = filter(lambda name: name.startswith(self.name),
-                                   sys.modules)
+        modules_to_remove = [
+            name for name in sys.modules if name.startswith(self.name)]
         modules_to_remove += (set(sys.modules.keys())
                               & set(parent_namespaces(self.name)))
         for name in modules_to_remove:
@@ -473,7 +474,7 @@ class SubPackageBuilder(object):
             self.path = self.parent_package.path.joinpath(self.name)
 
         self.path.mkdir_p()
-        map(create, self.subpackages)
+        list(map(create, self.subpackages))
 
         for relative_path in self.directories:
             self.path.joinpath(relative_path).makedirs()
