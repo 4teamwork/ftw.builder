@@ -1,7 +1,7 @@
 from ftw.builder import Builder
 from ftw.builder import create
 from ftw.builder.testing import TEMP_DIRECTORY_LAYER
-from unittest2 import TestCase
+from unittest import TestCase
 
 
 class TestZCMLBuilder(TestCase):

@@ -2,7 +2,7 @@ from ftw.builder import Builder
 from ftw.builder import create
 from ftw.builder.tests import IntegrationTestCase
 from Products.CMFPlone.utils import getFSVersionTuple
-from unittest2 import skipIf
+from unittest import skipIf
 
 
 @skipIf(getFSVersionTuple() >= (5,),

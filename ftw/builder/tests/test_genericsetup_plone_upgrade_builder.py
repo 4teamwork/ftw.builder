@@ -2,7 +2,7 @@ from ftw.builder import Builder
 from ftw.builder import create
 from ftw.builder.testing import BUILDER_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName
-from unittest2 import TestCase
+from unittest import TestCase
 
 
 class TestPloneUpgradeBuilder(TestCase):
@@ -113,7 +113,7 @@ class TestPloneUpgradeBuilder(TestCase):
 
         self.assertMultiLineEqual(
             '\n'.join((
-                    "from unittest2.case import TestCase",
+                    "from unittest.case import TestCase",
                     "",
                     "",
                     "class TheUpgrade(TestCase, tuple):",

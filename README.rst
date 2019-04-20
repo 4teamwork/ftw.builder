@@ -48,7 +48,7 @@ Setup builder session in your testcase:
 
     from ftw.builder import session
 
-    class TestPerson(unittest2.TestCase):
+    class TestPerson(unittest.TestCase):
 
         def setUp(self):
             session.current_session = session.factory()
@@ -75,7 +75,7 @@ Use the builder for creating objects in your tests:
     from ftw.builder import Builder
     from ftw.builder import create
     from my.package.testing import MY_PACKAGE_INTEGRATION_TESTING
-    from unittest2 import TestCase
+    from unittest import TestCase
 
     class TestMyFeature(TestCase)
 

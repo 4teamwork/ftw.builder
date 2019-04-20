@@ -1,7 +1,7 @@
 from __future__ import print_function
 from ftw.builder.utils import parent_namespaces
 from ftw.builder.utils import serialize_callable
-from unittest2 import TestCase
+from unittest import TestCase
 
 
 class TestParentNamespaces(TestCase):
@@ -40,7 +40,7 @@ def foo(bar):
                 assert 'something'
 
         self.assertMultiLineEqual('''
-from unittest2.case import TestCase
+from unittest.case import TestCase
 
 
 class TestSomething(TestCase):

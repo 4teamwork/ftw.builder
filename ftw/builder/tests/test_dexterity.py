@@ -15,8 +15,8 @@ from plone.autoform.interfaces import IFormFieldProvider
 from plone.dexterity.fti import DexterityFTI
 from plone.formwidget.contenttree import ObjPathSourceBinder
 from Products.CMFPlone.utils import getFSVersionTuple
-from unittest2 import skipIf
-from unittest2 import TestCase
+from unittest import skipIf
+from unittest import TestCase
 from z3c.relationfield.relation import RelationValue
 from z3c.relationfield.schema import RelationChoice
 from z3c.relationfield.schema import RelationList

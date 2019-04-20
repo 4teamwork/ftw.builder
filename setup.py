@@ -12,7 +12,6 @@ tests_require = [
     'plone.app.dexterity[relations]',
     'plone.app.testing',
     'plone.formwidget.contenttree',
-    'unittest2',
     'zope.configuration',
     ]
 

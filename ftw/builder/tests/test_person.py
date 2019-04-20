@@ -2,10 +2,10 @@ from ftw.builder import Builder
 from ftw.builder import create
 from ftw.builder import session
 from ftw.builder.tests import person
-import unittest2
+import unittest
 
 
-class TestPerson(unittest2.TestCase):
+class TestPerson(unittest.TestCase):
 
     def setUp(self):
         session.current_session = session.factory()
@@ -39,4 +39,4 @@ class TestPerson(unittest2.TestCase):
                           [child.name for child in parent.children])
 
 if __name__ == "__main__":
-    unittest2.main()
+    unittest.main()
