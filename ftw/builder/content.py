@@ -4,7 +4,7 @@ from ftw.builder.archetypes import ArchetypesBuilder
 from ftw.builder.dexterity import DexterityBuilder
 from plone.namedfile.interfaces import HAVE_BLOBS
 from Products.CMFPlone.utils import getFSVersionTuple
-from StringIO import StringIO
+from six import BytesIO
 import six
 
 
@@ -69,7 +69,7 @@ class FileBuilderMixin(object):
             content = content.encode('utf-8')
         if isinstance(name, six.text_type):
             name = name.encode('utf-8')
-        data = StringIO(content)
+        data = BytesIO(content)
         data.filename = name
         self.attach(data)
         return self
