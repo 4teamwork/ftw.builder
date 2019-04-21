@@ -40,7 +40,7 @@ def serialize_callable(callable_, *to_import):
         return re.sub(r'(^|\n){0}'.format(indentation), r'\g<1>', source)
 
     def get_import_string(thing):
-        if thing.__module__ == '__builtin__':
+        if thing.__module__ in ['__builtin__', 'builtins']:
             return None
         return 'from {0} import {1}'.format(thing.__module__, thing.__name__)
 
