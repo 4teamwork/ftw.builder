@@ -4,6 +4,7 @@ from ftw.builder.utils import serialize_callable
 from lxml import etree
 from path import Path
 from six.moves import map
+import six
 
 
 class GenericSetupBuilder(object):
@@ -55,7 +56,7 @@ class GenericSetupBuilder(object):
         if makedirs and Path(relative_path).parent:
             self.with_directory(Path(relative_path).parent)
 
-        self.files.append((relative_path, contents))
+        self.files.append((relative_path, six.ensure_text(contents)))
         return self
 
     def with_dependencies(self, *profile_ids):

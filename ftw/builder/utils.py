@@ -1,15 +1,15 @@
 from six.moves import map
 import inspect
 import re
+import six
 import unicodedata
 
 
 def strip_diacricits(text):
-    if isinstance(text, str):
-        text = text.decode('utf-8')
+    text = six.ensure_text(text)
     normalized = unicodedata.normalize('NFKD', text)
     text = u''.join([c for c in normalized if not unicodedata.combining(c)])
-    text = text.encode('utf-8')
+    text = six.ensure_str(text)
     return text
 
 
