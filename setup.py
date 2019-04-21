@@ -2,7 +2,7 @@ import os
 from setuptools import setup, find_packages
 
 
-version = '1.12.1.dev0'
+version = '2.0.0.dev0'
 
 tests_require = [
     'Acquisition',
@@ -26,6 +26,10 @@ setup(name='ftw.builder',
         'Framework :: Plone',
         'Framework :: Plone :: 4.3',
         'Framework :: Plone :: 5.1',
+        'Framework :: Plone :: 5.2',
+        'Programming Language :: Python',
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.7",
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Libraries :: Python Modules',
         ],
