@@ -98,9 +98,9 @@ class ImageBuilderMixin(FileBuilderMixin):
 
     def with_dummy_content(self):
         data = (
-            'GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\x00\x00'
-            '\x00!\xf9\x04\x04\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00'
-            '\x01\x00\x00\x02\x02D\x01\x00;')
+            b'GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\x00\x00'
+            b'\x00!\xf9\x04\x04\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00'
+            b'\x01\x00\x00\x02\x02D\x01\x00;')
 
         return self.attach_file_containing(data)
 
@@ -151,8 +151,8 @@ class CollectionBuilderMixin(object):
         querystringthing = []
 
         for name, value in query.items():
-            if isinstance(value, six.text_type):
-                value = value.encode('utf-8')
+            if isinstance(value, six.string_types):
+                value = six.ensure_str(value)
 
             if isinstance(value, str):
                 querystringthing.append(

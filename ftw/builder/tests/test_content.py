@@ -79,7 +79,7 @@ class TestFileBuilder(IntegrationTestCase):
         file_ = get_file(obj)
         self.assertEquals(
             {'filename': u'data.txt',
-             'data': u'Data Data'},
+             'data': b'Data Data'},
 
             {'filename': file_.filename,
              'data': file_.data})
@@ -91,7 +91,7 @@ class TestFileBuilder(IntegrationTestCase):
         file_ = get_file(obj)
         self.assertEquals(
             {'filename': u'test.doc',
-             'data': u'Test data'},
+             'data': b'Test data'},
 
             {'filename': file_.filename,
              'data': file_.data})
@@ -105,12 +105,12 @@ class TestImageBuilder(IntegrationTestCase):
 
     def test_setting_image_data(self):
         image = create(Builder('image')
-                       .attach_file_containing(u'IMG', u'foo.png'))
+                       .attach_file_containing(b'IMG', u'foo.png'))
         file_ = get_file(image)
 
         self.assertEquals(
             {'filename': u'foo.png',
-             'data': u'IMG'},
+             'data': b'IMG'},
 
             {'filename': file_.filename,
              'data': file_.data})
@@ -122,9 +122,9 @@ class TestImageBuilder(IntegrationTestCase):
 
         self.assertEquals(
             {'filename': u'image.gif',
-             'data': 'GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\x00\x00'
-             '\x00!\xf9\x04\x04\x00\x00\x00\x00,\x00\x00\x00\x00\x01'
-             '\x00\x01\x00\x00\x02\x02D\x01\x00;'},
+             'data': b'GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\x00\x00'
+             b'\x00!\xf9\x04\x04\x00\x00\x00\x00,\x00\x00\x00\x00\x01'
+             b'\x00\x01\x00\x00\x02\x02D\x01\x00;'},
 
             {'filename': file_.filename,
              'data': file_.data})
