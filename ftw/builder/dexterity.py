@@ -1,7 +1,6 @@
 from Acquisition import aq_base
 from ftw.builder import HAS_RELATION
 from ftw.builder.builder import PloneObjectBuilder
-from operator import methodcaller
 from plone.app.dexterity.behaviors.metadata import IOwnership
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.utils import addContentToContainer
@@ -16,6 +15,7 @@ from zope.component import queryUtility
 from zope.event import notify
 from zope.lifecycleevent import ObjectCreatedEvent
 from zope.schema import getFieldsInOrder
+import six
 
 if HAS_RELATION:
     from z3c.relationfield.interfaces import IRelationChoice
@@ -173,7 +173,7 @@ class DexterityBuilder(PloneObjectBuilder):
         # Because the field equality check is insufficient we need to check
         # the field interface additionally.
         if IOwnership['creators'] == field and field.interface == IOwnership:
-            value = tuple(map(methodcaller('decode', 'utf8'), value))
+            value = tuple(map(six.ensure_text, value))
         return value
 
     def get_missing_value_for_field(self, field):
