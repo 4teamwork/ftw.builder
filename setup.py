@@ -11,7 +11,6 @@ tests_require = [
     'plone.api',
     'plone.app.dexterity[relations]',
     'plone.app.testing',
-    'plone.formwidget.contenttree',
     'zope.configuration',
     ]
 

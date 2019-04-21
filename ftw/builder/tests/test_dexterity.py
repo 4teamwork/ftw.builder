@@ -13,7 +13,7 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.dexterity.fti import DexterityFTI
-from plone.formwidget.contenttree import ObjPathSourceBinder
+from plone.app.vocabularies.catalog import CatalogSource
 from Products.CMFPlone.utils import getFSVersionTuple
 from unittest import skipIf
 from unittest import TestCase
@@ -64,7 +64,7 @@ class IBookSchema(Interface):
 
     relation_choice = RelationChoice(
         title=u'Relation-Choice',
-        source=ObjPathSourceBinder(),
+        source=CatalogSource(),
         required=False,
     )
 
@@ -83,7 +83,7 @@ class IBookSchema(Interface):
         default=[],
         value_type=RelationChoice(
             title=u"Relation-List",
-            source=ObjPathSourceBinder(),
+            source=CatalogSource(),
             ),
         required=False,
         )
