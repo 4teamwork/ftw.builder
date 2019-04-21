@@ -94,7 +94,7 @@ class TestPloneUpgradeBuilder(TestCase):
 
         self.assertMultiLineEqual(
             '\n'.join(("def the_upgrade(setup_context):",
-                       "    print 'YAY, we are up to date'",
+                       "    print('YAY, we are up to date')",
                        "")),
             package.package_path.joinpath('upgrades', 'to1001.py').text())
 
@@ -118,6 +118,6 @@ class TestPloneUpgradeBuilder(TestCase):
                     "",
                     "class TheUpgrade(TestCase, tuple):",
                     "    def __init__(self, setup_context):",
-                    "        print 'This is not an upgrade and does not work...'",
+                    "        print('This is not an upgrade and does not work...')",
                     "")),
             package.package_path.joinpath('upgrades', 'to1001.py').text())

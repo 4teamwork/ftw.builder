@@ -30,7 +30,7 @@ class TestCallableSerializer(TestCase):
 def foo(bar):
     """Prints the argument
     """
-    print 'bar is:', bar
+    print('bar is:', bar)
     return bar
 '''.lstrip(), serialize_callable(foo))
 
@@ -68,8 +68,8 @@ from ftw.builder.utils import serialize_callable
 
 
 def print_docs():
-    print parent_namespaces.__docs__
-    print serialize_callable.__docs__
+    print(parent_namespaces.__docs__)
+    print(serialize_callable.__docs__)
 '''.lstrip(), serialize_callable(print_docs, parent_namespaces, serialize_callable))
 
     def test_callable_is_required(self):
