@@ -31,6 +31,7 @@ from zope.intid.interfaces import IIntIds
 from zope.lifecycleevent.interfaces import IObjectAddedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 from zope.schema.interfaces import IContextAwareDefaultFactory
+import six
 
 
 class IFoo(Interface):
@@ -43,7 +44,7 @@ def topic_default():
 
 @provider(IContextAwareDefaultFactory)
 def container_title_default(container):
-    return aq_base(container).title
+    return six.ensure_text(aq_base(container).title)
 
 
 class IBookSchema(Interface):
