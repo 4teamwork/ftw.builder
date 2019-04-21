@@ -47,7 +47,8 @@ class TestUserBuilder(IntegrationTestCase):
         user = create(Builder('user'))
         group = create(Builder('group').titled('Administrators')
                        .with_members(user.getUser()))
-        self.assertEquals([user], group.getAllGroupMembers())
+        self.assertEquals(
+            [user.getId()], [m.getId() for m in group.getAllGroupMembers()])
 
     def test_security_indexes_are_up_to_date(self):
         wftool = getToolByName(self.portal, 'portal_workflow')
