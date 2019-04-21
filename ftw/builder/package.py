@@ -3,6 +3,7 @@ from ftw.builder import Builder
 from ftw.builder import builder_registry
 from ftw.builder import create
 from ftw.builder.utils import parent_namespaces
+from importlib import import_module
 from path import Path
 from six.moves import map
 from zope.configuration import xmlconfig
@@ -92,7 +93,7 @@ class Package(object):
         context manager (with statement), otherwise it may raise
         an ``ImportError``.
         """
-        return __import__(self.name, fromlist=self.name)
+        return import_module(self.name, package=self.name)
 
     @contextmanager
     def imported(self):
