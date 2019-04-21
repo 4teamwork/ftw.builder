@@ -76,5 +76,5 @@ def print_docs():
         with self.assertRaises(ValueError) as cm:
             serialize_callable(1)
 
-        self.assertEquals('A callable is required.',
-                          str(cm.exception))
+        self.assertEqual('A callable is required.',
+                         str(cm.exception))

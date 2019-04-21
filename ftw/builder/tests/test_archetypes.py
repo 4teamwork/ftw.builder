@@ -30,5 +30,5 @@ class TestArchetypesBuilder(IntegrationTestCase):
                         .with_property('layout', 'folder_contents')
                         .with_property('foo', 3, 'int'))
 
-        self.assertEquals('folder_contents', getattr(folder, 'layout', None))
-        self.assertEquals(3, getattr(folder, 'foo', None))
+        self.assertEqual('folder_contents', getattr(folder, 'layout', None))
+        self.assertEqual(3, getattr(folder, 'foo', None))

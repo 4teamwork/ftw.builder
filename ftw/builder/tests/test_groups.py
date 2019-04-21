@@ -8,20 +8,20 @@ class TestUserBuilder(IntegrationTestCase):
 
     def test_group_name_is_normalized_by_title(self):
         group = create(Builder('group').titled('Masters of Disaster'))
-        self.assertEquals('masters-of-disaster', group.getId())
+        self.assertEqual('masters-of-disaster', group.getId())
 
     def test_title_is_set(self):
         group = create(Builder('group').titled('Masters of Disaster'))
-        self.assertEquals('Masters of Disaster', group.getProperty('title'))
+        self.assertEqual('Masters of Disaster', group.getProperty('title'))
 
     def test_group_id_can_be_set(self):
         group = create(Builder('group').with_groupid('foo'))
-        self.assertEquals('foo', group.getId())
+        self.assertEqual('foo', group.getId())
 
     def test_either_userid_or_title_needs_to_be_defined(self):
         with self.assertRaises(AssertionError) as cm:
             create(Builder('group'))
-        self.assertEquals(
+        self.assertEqual(
             'Cannot create group: no group title (or id) defined.',
             str(cm.exception))
 
@@ -32,8 +32,8 @@ class TestUserBuilder(IntegrationTestCase):
         group = create(Builder('group')
                        .titled('Something')
                        .with_roles('Editor', 'Contributor'))
-        self.assertEquals(set(['Authenticated', 'Editor', 'Contributor']),
-                          set(group.getRoles()))
+        self.assertEqual(set(['Authenticated', 'Editor', 'Contributor']),
+                         set(group.getRoles()))
 
     def test_create_group_with_local_roles(self):
         folder = create(Builder('folder'))
@@ -47,7 +47,7 @@ class TestUserBuilder(IntegrationTestCase):
         user = create(Builder('user'))
         group = create(Builder('group').titled('Administrators')
                        .with_members(user.getUser()))
-        self.assertEquals(
+        self.assertEqual(
             [user.getId()], [m.getId() for m in group.getAllGroupMembers()])
 
     def test_security_indexes_are_up_to_date(self):

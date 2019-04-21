@@ -35,8 +35,8 @@ class TestPerson(unittest.TestCase):
         parent = create(Builder('person')
                         .with_children(['peter', 'sophie', 'james']))
 
-        self.assertEquals(['peter', 'sophie', 'james'],
-                          [child.name for child in parent.children])
+        self.assertEqual(['peter', 'sophie', 'james'],
+                         [child.name for child in parent.children])
 
 if __name__ == "__main__":
     unittest.main()

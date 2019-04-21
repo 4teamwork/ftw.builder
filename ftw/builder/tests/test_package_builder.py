@@ -101,8 +101,8 @@ class TestPackageBuilder(TestCase):
             Builder('python package').named('ftw.builder.testing')
 
             self.assertEqual('Invalid package name "ftw.builder.testing": '
-                         'there is already a package or module with the same name.',
-                         str(cm.exception))
+                             'there is already a package or module with the same name.',
+                             str(cm.exception))
 
     def test_package_can_be_imported(self):
         path = self.layer['temp_directory'].joinpath('the.package')
@@ -166,7 +166,7 @@ class TestPackageBuilder(TestCase):
         history_path = path.joinpath('docs', 'HISTORY.txt')
         self.assertTrue(history_path.isfile(),
                         'File "docs/HISTORY.txt" was not created.')
-        self.assertEquals('CHANGELOG', history_path.text())
+        self.assertEqual('CHANGELOG', history_path.text())
 
     def test_create_a_directory_in_the_package(self):
         path = self.layer['temp_directory'].joinpath('the.package')
@@ -188,7 +188,7 @@ class TestPackageBuilder(TestCase):
         print_path = path.joinpath('the', 'package', 'resources', 'print.css')
         self.assertTrue(print_path.isfile(),
                         'File "README.txt" was not created.')
-        self.assertEquals('body {}', print_path.text())
+        self.assertEqual('body {}', print_path.text())
 
     def test_delegates_zcml_include_to_zcml_builder(self):
         package = create(Builder('python package')
@@ -212,15 +212,15 @@ class TestPackageBuilder(TestCase):
         with create(Builder('python package')
                     .named('the.package')
                     .at_path(self.layer['temp_directory'])).imported():
-            self.assertEquals('1.0.0.dev0',
-                              pkg_resources.get_distribution('the.package').version)
+            self.assertEqual('1.0.0.dev0',
+                             pkg_resources.get_distribution('the.package').version)
 
         with create(Builder('python package')
                     .named('the.package')
                     .with_version('1.2.3')
                     .at_path(self.layer['temp_directory'])).imported():
-            self.assertEquals('1.2.3',
-                              pkg_resources.get_distribution('the.package').version)
+            self.assertEqual('1.2.3',
+                             pkg_resources.get_distribution('the.package').version)
 
 
 class TestNamespacePackage(TestCase):
@@ -268,7 +268,7 @@ class TestSubPackageBuilder(TestCase):
 
     def test_getting_subpackage_builder(self):
         builder = Builder('subpackage')
-        self.assertEquals(builder.get_subpackage('browser'),
-                          builder.get_subpackage('browser'),
-                          '.get_subpackage() does not always return the same builder'
-                          ' for the same name.')
+        self.assertEqual(builder.get_subpackage('browser'),
+                         builder.get_subpackage('browser'),
+                         '.get_subpackage() does not always return the same builder'
+                         ' for the same name.')

@@ -145,7 +145,7 @@ class TestDexterityBuilder(DexterityBaseTestCase):
                          .with_constraints()
                          .having(title=u'Testtitle'))
 
-        self.assertEquals(
+        self.assertEqual(
             'Disallowed subobject type: Book', str(cm.exception))
 
     def test_ignore_constraints_by_default(self):
@@ -157,40 +157,40 @@ class TestDexterityBuilder(DexterityBaseTestCase):
         book = create(Builder('book')
                          .having(title=u'Testtitle'))
 
-        self.assertEquals('Testtitle', book.title)
+        self.assertEqual('Testtitle', book.title)
 
     def test_sets_value_on_behavior_fields(self):
         book = create(Builder('book')
                      .having(title=u'Testtitle',
                              effective=datetime(2013, 1, 1)))
 
-        self.assertEquals(DateTime('2013-01-01T00:00:00+01:00'),
-                          DateTime(book.EffectiveDate()).toZone('GMT+1'))
+        self.assertEqual(DateTime('2013-01-01T00:00:00+01:00'),
+                         DateTime(book.EffectiveDate()).toZone('GMT+1'))
 
     def test_initalizing_fields_with_missing_value(self):
         book = create(Builder('book')
                      .having(title=u'Testtitle'))
 
-        self.assertEquals((), book.chapters)
+        self.assertEqual((), book.chapters)
 
     def test_sets_default_values_by_default(self):
         book = create(Builder('book')
                      .having(title=u'Testtitle'))
 
-        self.assertEquals(u'test_user_1_', book.author)
-        self.assertEquals((u'test_user_1_', ), book.listCreators())
+        self.assertEqual(u'test_user_1_', book.author)
+        self.assertEqual((u'test_user_1_', ), book.listCreators())
 
     def test_sets_default_values_from_default_factories(self):
         book = create(Builder('book')
                      .having(title=u'Testtitle'))
 
-        self.assertEquals(u'Fantasy', book.topic)
+        self.assertEqual(u'Fantasy', book.topic)
 
     def test_sets_default_values_from_context_aware_default_factories(self):
         book = create(Builder('book')
                      .having(title=u'Testtitle'))
 
-        self.assertEquals(u'Plone site', book.container_title)
+        self.assertEqual(u'Plone site', book.container_title)
 
     def test_object_providing_interface(self):
         book = create(Builder('book').providing(IFoo))
@@ -201,17 +201,17 @@ class TestDexterityBuilder(DexterityBaseTestCase):
 
         book = create(Builder('book').with_creation_date(creation_date))
 
-        self.assertEquals(creation_date, book.created())
-        self.assertEquals(creation_date, obj2brain(book).created)
+        self.assertEqual(creation_date, book.created())
+        self.assertEqual(creation_date, obj2brain(book).created)
 
     def test_with_property(self):
         book = create(Builder('book')
                       .with_property('layout', 'folder_contents')
                       .with_property('foo', 3, 'int'))
 
-        self.assertEquals('folder_contents',
-                          getattr(aq_base(book), 'layout', None))
-        self.assertEquals(3, getattr(aq_base(book), 'foo', None))
+        self.assertEqual('folder_contents',
+                         getattr(aq_base(book), 'layout', None))
+        self.assertEqual(3, getattr(aq_base(book), 'foo', None))
 
     def test_initializes_relation_choice_relation_value_from_object(self):
         related = create(Builder('book'))

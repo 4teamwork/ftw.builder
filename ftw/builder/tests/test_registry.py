@@ -18,8 +18,8 @@ class TestRegistry(TestCase):
         registry.register('Foo', FooBuilder)
         registry.register('Bar', BarBuilder)
 
-        self.assertEquals(FooBuilder, registry.get('Foo'))
-        self.assertEquals(BarBuilder, registry.get('Bar'))
+        self.assertEqual(FooBuilder, registry.get('Foo'))
+        self.assertEqual(BarBuilder, registry.get('Bar'))
 
     def test_overriding_registered_builders_raises_ValueError(self):
         registry = Registry()
@@ -45,6 +45,6 @@ class TestRegistry(TestCase):
         with self.assertRaises(KeyError) as cm:
             registry.get('My Type')
 
-        self.assertEquals(
+        self.assertEqual(
             "'Unknown builder \"My Type\"'",
             str(cm.exception))
