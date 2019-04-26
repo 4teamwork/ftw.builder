@@ -100,9 +100,9 @@ class TestPackageBuilder(TestCase):
         with self.assertRaises(ValueError) as cm:
             Builder('python package').named('ftw.builder.testing')
 
-            self.assertEqual('Invalid package name "ftw.builder.testing": '
-                             'there is already a package or module with the same name.',
-                             str(cm.exception))
+        self.assertEqual('Invalid package name "ftw.builder.testing": '
+                         'there is already a package or module with the same name.',
+                         str(cm.exception))
 
     def test_package_can_be_imported(self):
         path = self.layer['temp_directory'].joinpath('the.package')

@@ -3,11 +3,11 @@ from ftw.builder import Builder
 from ftw.builder import builder_registry
 from ftw.builder import create
 from ftw.builder.utils import parent_namespaces
+from ftw.builder.compat import find_module
 from importlib import import_module
 from path import Path
 from six.moves import map
 from zope.configuration import xmlconfig
-import imp
 import pkg_resources
 import stat
 import subprocess
@@ -292,33 +292,12 @@ class PythonPackageBuilder(object):
         """For avoiding import collisions package names which are already somehow used
         are not allowed.
         """
-
-        def find_module(dottedname, paths=None):
-            # imp.find_module does not support dottednames, it can only
-            # resolve one name level at the time.
-            # This find_module function does the recursion so that
-            # dottednames work.
-            if '.' in dottedname:
-                name, dottedname = dottedname.split('.', 1)
-            else:
-                name = dottedname
-                dottedname = None
-
-            fp, pathname, description = imp.find_module(name, paths)
-            if not dottedname:
-                return fp, pathname, description
-            else:
-                return find_module(dottedname, [pathname])
-
-        try:
-            fp, pathname, description = find_module(name)
-        except ImportError:
-            return True
-
-        else:
+        if find_module(name):
             raise ValueError(
                 'Invalid package name "{0}": there is already'
                 ' a package or module with the same name.'.format(name))
+        else:
+            return True
 
 
 builder_registry.register('python package', PythonPackageBuilder)
