@@ -75,14 +75,16 @@ class TestGenericSetupProfileBuilder(TestCase):
 
     def test_dependencies(self):
         package = create(self.package_builder
+                         .with_profile(Builder('genericsetup profile').named('foo'))
+                         .with_profile(Builder('genericsetup profile').named('bar'))
                          .with_profile(Builder('genericsetup profile')
-                                       .with_dependencies('collective.foo:default',
-                                                          'profile-collective.bar:default')))
+                                       .with_dependencies('the.package:foo',
+                                                          'profile-the.package:bar')))
 
         with package.zcml_loaded(self.layer['configurationContext']):
             self.assertEquals(
-                (u'profile-collective.foo:default',
-                 u'profile-collective.bar:default'),
+                (u'profile-the.package:foo',
+                 u'profile-the.package:bar'),
                 self.genericsetup.getDependenciesForProfile('the.package:default'))
 
     def get_profile_info(self, profile_id):
