@@ -180,6 +180,7 @@ The built-in builders are:
 - ``file`` - creates a File
 - ``image`` - creates an Image
 - ``collection`` (or ``topic``) - creates a collection
+- ``link`` - creates a Link
 
 There are two builder implementations, an Archetypes (Plone < 5) and a
 Dexterity (Plone >= 5) implementation.

@@ -184,6 +184,20 @@ class DXCollectionBuilder(CollectionBuilderMixin, DexterityBuilder):
     pass
 
 
+# ==== Link ====
+
+class LinkBuilderMixin(object):
+    portal_type = 'Link'
+
+
+class ATLinkBuilder(LinkBuilderMixin, ArchetypesBuilder):
+    pass
+
+
+class DXLinkBuilder(LinkBuilderMixin, DexterityBuilder):
+    pass
+
+
 # ==== Registration ====
 
 
@@ -195,6 +209,7 @@ def register_at_content_builders(**kwargs):
     builder_registry.register('image', ATImageBuilder, **kwargs)
     builder_registry.register('collection', ATCollectionBuilder, **kwargs)
     builder_registry.register('topic', ATCollectionBuilder, **kwargs)
+    builder_registry.register('link', ATLinkBuilder, **kwargs)
 
 
 def register_dx_content_builders(**kwargs):
@@ -205,6 +220,7 @@ def register_dx_content_builders(**kwargs):
     builder_registry.register('image', DXImageBuilder, **kwargs)
     builder_registry.register('collection', DXCollectionBuilder, **kwargs)
     builder_registry.register('topic', DXCollectionBuilder, **kwargs)
+    builder_registry.register('link', DXLinkBuilder, **kwargs)
 
 
 if getFSVersionTuple() > (5, ):
