@@ -8,7 +8,7 @@ The builder pattern simplifies constructing objects.
 In tests we often need to create Plone objects, sometimes a single object,
 sometimes a whole graph of objects.
 Using the builder pattern allows us to do this in a DRY way, so that we do not
-repeat this over and over.
+need to repeat this over and over again.
 
 .. code:: python
 
@@ -42,7 +42,7 @@ Add ``ftw.builder`` as (test-) dependency to your package in ``setup.py``:
 Usage
 -----
 
-Setup builder session in your testcase
+Setup builder session in your testcase:
 
 .. code:: python
 
@@ -56,7 +56,8 @@ Setup builder session in your testcase
         def tearDown(self):
             session.current_session = None
 
-In plone projects you can use the ``BUILDER_LAYER`` which your testing layer should base on. So the the session management is handled by the ``BUILDER_LAYER``:
+In plone projects you can use the ``BUILDER_LAYER`` which your testing layer should base on.
+So the the session management is handled by the ``BUILDER_LAYER``:
 
 .. code:: python
 
@@ -98,12 +99,12 @@ custom session with ``set_builder_session_factory``.
 Auto commit
 +++++++++++
 
-When having a functional testing layer (``plone.app.testing.FunctionalTesting``)
-and doing browser tests it is necessary that the new objects are committed in
-the ZODB. When using a ``IntegrationTesting`` on the other hand it is essential
-that nothing is comitted, since this would break test isolation.
+When using a functional testing layer (``plone.app.testing.FunctionalTesting``)
+and doing browser tests it is necessary for new objects to be committed in
+the ZODB. However, when using a ``IntegrationTesting`` it is essential
+that nothing is committed, since this would break test isolation.
 
-The session provides the ``auto_commit`` option (dislabed by default), which
+The session provides the ``auto_commit`` option (disabled by default), which
 commits to the ZODB after creating an object. Since it is disabled by default
 you need to enable it in functional test cases.
 
@@ -153,7 +154,7 @@ factory in functional tests. Make sure to also base your fixture on the
 Plone object builders
 ~~~~~~~~~~~~~~~~~~~~~
 
-For creating Plone objects (Archetypes or Dexterity) there are some methods for
+When creating Plone objects (Archetypes or Dexterity) there are some methods for
 setting basic options:
 
 - ``within(container)`` - tell the builder where to create the object
@@ -169,17 +170,17 @@ setting basic options:
 Default builders
 ~~~~~~~~~~~~~~~~
 
-The ``ftw.builder`` ships with some builders for some default Plone
+The ``ftw.builder`` ships with some builders for some of the default Plone
 content types, but the idea is that you can easily craft your own builders for
 your types or extend existing builders.
 
 The built-in builders are:
 
-- ``folder`` - creates an folder
-- ``page`` (or ``document``) - creates an page (alias Document)
+- ``folder`` - creates a Folder
+- ``page`` (or ``document``) - creates a Page (alias Document)
 - ``file`` - creates a File
 - ``image`` - creates an Image
-- ``collection`` (or ``topic``) - creates a collection
+- ``collection`` (or ``topic``) - creates a Collection
 - ``link`` - creates a Link
 
 There are two builder implementations, an Archetypes (Plone < 5) and a
@@ -206,7 +207,7 @@ the builders to dexterity:
 Attaching files
 +++++++++++++++
 
-The default Archetypes file builder let's you attach a file or create the file
+The default Archetypes file builder lets you attach a file or create the file
 with dummy content. The archetypes image builder provides a real image (1x1 px GIF):
 
 .. code:: python
@@ -257,7 +258,7 @@ You can also configure all the other necessary things:
 Groups builder
 ++++++++++++++
 
-The "group" bilder helps you create groups:
+The "group" builder helps you create groups:
 
 .. code:: python
 
@@ -282,7 +283,7 @@ or builders creating a set of objects using other builders.
 Creating python builders
 ++++++++++++++++++++++++
 
-Define a simpe builder class for your python object and register them in the builder registry
+Define a simple builder class for your python object and register it in the builder registry
 
 .. code:: python
 
