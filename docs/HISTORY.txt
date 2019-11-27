@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.11.2 (unreleased)
+1.12.0 (2019-11-27)
 -------------------
 
 - Add ATLinkBuilder and DXLinkBuilder. [djowett-ftw]
