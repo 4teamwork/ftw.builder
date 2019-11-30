@@ -1,20 +1,11 @@
 from ftw.builder import Builder
 from ftw.builder import create
 from ftw.builder.tests import FunctionalTestCase
+from ftw.testbrowser import browsing
 from Products.CMFPlone.utils import getFSVersionTuple
 import unittest
 
-# Disable ftw.testbrowser based tests for Plone 5.2
-# TODO: Reenable them when ftw.testbrowser is available for Plone 5.2
-if getFSVersionTuple() < (5, 2):
-    from ftw.testbrowser import browsing
-else:
-    def browsing(func):
-        return func
 
-
-@unittest.skipIf(getFSVersionTuple() >= (5, 2),
-                 'ftw.testbrowser not yet available for Plone 5.2')
 class TestStaticPortletBuilder(FunctionalTestCase):
 
     def setUp(self):
@@ -74,8 +65,6 @@ class TestStaticPortletBuilder(FunctionalTestCase):
         )
 
 
-@unittest.skipIf(getFSVersionTuple() >= (5, 2),
-                 'ftw.testbrowser not yet available for Plone 5.2')
 class TestNavigationPortletBuilder(FunctionalTestCase):
 
     def setUp(self):
