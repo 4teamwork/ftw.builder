@@ -1,14 +1,15 @@
+from six.moves import map
 import inspect
 import re
+import six
 import unicodedata
 
 
 def strip_diacricits(text):
-    if isinstance(text, str):
-        text = text.decode('utf-8')
+    text = six.ensure_text(text)
     normalized = unicodedata.normalize('NFKD', text)
     text = u''.join([c for c in normalized if not unicodedata.combining(c)])
-    text = text.encode('utf-8')
+    text = six.ensure_str(text)
     return text
 
 
@@ -39,7 +40,7 @@ def serialize_callable(callable_, *to_import):
         return re.sub(r'(^|\n){0}'.format(indentation), r'\g<1>', source)
 
     def get_import_string(thing):
-        if thing.__module__ == '__builtin__':
+        if thing.__module__ in ['__builtin__', 'builtins']:
             return None
         return 'from {0} import {1}'.format(thing.__module__, thing.__name__)
 
@@ -47,6 +48,6 @@ def serialize_callable(callable_, *to_import):
         to_import += callable_.__bases__
 
     imports_source = '\n'.join(sorted(
-            filter(None, map(get_import_string, to_import))))
+            [_f for _f in map(get_import_string, to_import) if _f]))
     callable_source = dedent(inspect.getsource(callable_))
     return '\n\n\n'.join((imports_source, callable_source)).lstrip()

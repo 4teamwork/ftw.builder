@@ -4,7 +4,8 @@ from ftw.builder.archetypes import ArchetypesBuilder
 from ftw.builder.dexterity import DexterityBuilder
 from plone.namedfile.interfaces import HAVE_BLOBS
 from Products.CMFPlone.utils import getFSVersionTuple
-from StringIO import StringIO
+from six import BytesIO
+import six
 
 
 if HAVE_BLOBS:
@@ -51,7 +52,7 @@ class FileBuilderMixin(object):
         if issubclass(self.__class__, DexterityBuilder):
             return self._attach_dx_file(content, name)
         else:
-            if isinstance(name, unicode):
+            if isinstance(name, six.text_type):
                 name = name.encode('utf-8')
             return self._attach_at_file(content, name)
 
@@ -64,11 +65,11 @@ class FileBuilderMixin(object):
         return self
 
     def _attach_at_file(self, content, name):
-        if isinstance(content, unicode):
+        if isinstance(content, six.text_type):
             content = content.encode('utf-8')
-        if isinstance(name, unicode):
+        if isinstance(name, six.text_type):
             name = name.encode('utf-8')
-        data = StringIO(content)
+        data = BytesIO(content)
         data.filename = name
         self.attach(data)
         return self
@@ -97,9 +98,9 @@ class ImageBuilderMixin(FileBuilderMixin):
 
     def with_dummy_content(self):
         data = (
-            'GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\x00\x00'
-            '\x00!\xf9\x04\x04\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00'
-            '\x01\x00\x00\x02\x02D\x01\x00;')
+            b'GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\x00\x00'
+            b'\x00!\xf9\x04\x04\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00'
+            b'\x01\x00\x00\x02\x02D\x01\x00;')
 
         return self.attach_file_containing(data)
 
@@ -150,8 +151,8 @@ class CollectionBuilderMixin(object):
         querystringthing = []
 
         for name, value in query.items():
-            if isinstance(value, unicode):
-                value = value.encode('utf-8')
+            if isinstance(value, six.string_types):
+                value = six.ensure_str(value)
 
             if isinstance(value, str):
                 querystringthing.append(

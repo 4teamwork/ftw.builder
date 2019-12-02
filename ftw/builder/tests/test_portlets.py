@@ -3,6 +3,7 @@ from ftw.builder import create
 from ftw.builder.tests import FunctionalTestCase
 from ftw.testbrowser import browsing
 from Products.CMFPlone.utils import getFSVersionTuple
+import unittest
 
 
 class TestStaticPortletBuilder(FunctionalTestCase):

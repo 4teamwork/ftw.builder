@@ -1,7 +1,7 @@
 from ftw.builder import Builder
 from ftw.builder import create
 from ftw.builder.testing import BUILDER_INTEGRATION_TESTING
-from unittest2 import TestCase
+from unittest import TestCase
 
 
 class TestPackageBuilderZCML(TestCase):

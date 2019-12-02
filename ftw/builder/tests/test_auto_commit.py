@@ -1,6 +1,6 @@
 from ftw.builder import session
 from ftw.builder.testing import BUILDER_FUNCTIONAL_TESTING
-from unittest2 import TestCase
+from unittest import TestCase
 
 
 class TestSessionAutoCommit(TestCase):

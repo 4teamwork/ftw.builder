@@ -72,13 +72,18 @@ class BuilderTestingLayer(PloneSandboxLayer):
         zca.popGlobalRegistry()
 
     def setUpZope(self, app, configurationContext):
-        xmlconfig.string(
-            '<configure xmlns="http://namespaces.zope.org/zope">'
-            '  <include package="z3c.autoinclude" file="meta.zcml" />'
-            '  <includePlugins package="plone" />'
-            '  <includePluginsOverrides package="plone" />'
-            '</configure>',
-            context=configurationContext)
+        import plone.app.dexterity
+        xmlconfig.file(
+            'configure.zcml',
+            plone.app.dexterity,
+            context=configurationContext
+        )
+        import plone.app.relationfield
+        xmlconfig.file(
+            'configure.zcml',
+            plone.app.relationfield,
+            context=configurationContext
+        )
 
         # register behavior
         xmlconfig.string(

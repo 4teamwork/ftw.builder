@@ -2,17 +2,15 @@ import os
 from setuptools import setup, find_packages
 
 
-version = '1.12.1.dev0'
+version = '2.0.0.dev0'
 
 tests_require = [
     'Acquisition',
-    'ftw.testbrowser',
-    'ftw.testing',
+    'ftw.testbrowser >= 2.0.0.dev0',
+    'ftw.testing >= 2.0.0.dev0',
     'plone.api',
     'plone.app.dexterity[relations]',
     'plone.app.testing',
-    'plone.formwidget.contenttree',
-    'unittest2',
     'zope.configuration',
     ]
 
@@ -28,6 +26,10 @@ setup(name='ftw.builder',
         'Framework :: Plone',
         'Framework :: Plone :: 4.3',
         'Framework :: Plone :: 5.1',
+        'Framework :: Plone :: 5.2',
+        'Programming Language :: Python',
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.7",
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Libraries :: Python Modules',
         ],
@@ -52,6 +54,7 @@ setup(name='ftw.builder',
           'path.py',
           'plone.app.dexterity',
           'setuptools',
+          'six >= 1.12.0',
           'transaction',
           'z3c.form',
           'z3c.relationfield',

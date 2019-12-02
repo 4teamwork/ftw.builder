@@ -2,7 +2,7 @@ from ftw.builder import Builder
 from ftw.builder import create
 from ftw.builder.testing import BUILDER_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName
-from unittest2 import TestCase
+from unittest import TestCase
 
 
 class TestPloneUpgradeBuilder(TestCase):
@@ -82,7 +82,7 @@ class TestPloneUpgradeBuilder(TestCase):
 
     def test_with_calling_a_function(self):
         def the_upgrade(setup_context):
-            print 'YAY, we are up to date'
+            print('YAY, we are up to date')
 
         package = create(Builder('python package')
                          .named('the.package')
@@ -94,14 +94,14 @@ class TestPloneUpgradeBuilder(TestCase):
 
         self.assertMultiLineEqual(
             '\n'.join(("def the_upgrade(setup_context):",
-                       "    print 'YAY, we are up to date'",
+                       "    print('YAY, we are up to date')",
                        "")),
             package.package_path.joinpath('upgrades', 'to1001.py').text())
 
     def test_with_calling_a_class(self):
         class TheUpgrade(TestCase, tuple):
             def __init__(self, setup_context):
-                print 'This is not an upgrade and does not work...'
+                print('This is not an upgrade and does not work...')
 
         package = create(Builder('python package')
                          .named('the.package')
@@ -113,11 +113,11 @@ class TestPloneUpgradeBuilder(TestCase):
 
         self.assertMultiLineEqual(
             '\n'.join((
-                    "from unittest2.case import TestCase",
+                    "from unittest.case import TestCase",
                     "",
                     "",
                     "class TheUpgrade(TestCase, tuple):",
                     "    def __init__(self, setup_context):",
-                    "        print 'This is not an upgrade and does not work...'",
+                    "        print('This is not an upgrade and does not work...')",
                     "")),
             package.package_path.joinpath('upgrades', 'to1001.py').text())

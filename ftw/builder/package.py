@@ -3,9 +3,11 @@ from ftw.builder import Builder
 from ftw.builder import builder_registry
 from ftw.builder import create
 from ftw.builder.utils import parent_namespaces
+from ftw.builder.compat import find_module
+from importlib import import_module
 from path import Path
+from six.moves import map
 from zope.configuration import xmlconfig
-import imp
 import pkg_resources
 import stat
 import subprocess
@@ -78,8 +80,8 @@ class Package(object):
     def __exit__(self, type, value, tb):
         pkg_resources.working_set = self._original_working_set
         sys.path.remove(self.root_path)
-        modules_to_remove = filter(lambda name: name.startswith(self.name),
-                                   sys.modules)
+        modules_to_remove = [
+            name for name in sys.modules if name.startswith(self.name)]
         modules_to_remove += (set(sys.modules.keys())
                               & set(parent_namespaces(self.name)))
         for name in modules_to_remove:
@@ -91,7 +93,7 @@ class Package(object):
         context manager (with statement), otherwise it may raise
         an ``ImportError``.
         """
-        return __import__(self.name, fromlist=self.name)
+        return import_module(self.name, package=self.name)
 
     @contextmanager
     def imported(self):
@@ -290,33 +292,12 @@ class PythonPackageBuilder(object):
         """For avoiding import collisions package names which are already somehow used
         are not allowed.
         """
-
-        def find_module(dottedname, paths=None):
-            # imp.find_module does not support dottednames, it can only
-            # resolve one name level at the time.
-            # This find_module function does the recursion so that
-            # dottednames work.
-            if '.' in dottedname:
-                name, dottedname = dottedname.split('.', 1)
-            else:
-                name = dottedname
-                dottedname = None
-
-            fp, pathname, description = imp.find_module(name, paths)
-            if not dottedname:
-                return fp, pathname, description
-            else:
-                return find_module(dottedname, [pathname])
-
-        try:
-            fp, pathname, description = find_module(name)
-        except ImportError:
-            return True
-
-        else:
+        if find_module(name):
             raise ValueError(
                 'Invalid package name "{0}": there is already'
                 ' a package or module with the same name.'.format(name))
+        else:
+            return True
 
 
 builder_registry.register('python package', PythonPackageBuilder)
@@ -473,7 +454,7 @@ class SubPackageBuilder(object):
             self.path = self.parent_package.path.joinpath(self.name)
 
         self.path.mkdir_p()
-        map(create, self.subpackages)
+        list(map(create, self.subpackages))
 
         for relative_path in self.directories:
             self.path.joinpath(relative_path).makedirs()

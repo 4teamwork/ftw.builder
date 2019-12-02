@@ -1,7 +1,7 @@
 from ftw.builder import builder_registry
 from lxml import etree
 from path import Path
-from StringIO import StringIO
+from six import BytesIO
 
 
 NAMESPACES = {
@@ -120,7 +120,7 @@ class ZCMLBuilder(object):
     def generate(self):
         self._update_lazy_nodes()
 
-        normalized = StringIO()
+        normalized = BytesIO()
         self.root.getroottree().write_c14n(normalized)
         xml = etree.fromstring(normalized.getvalue())
         return etree.tostring(xml, pretty_print=True,

@@ -1,6 +1,7 @@
+from __future__ import print_function
 from ftw.builder.utils import parent_namespaces
 from ftw.builder.utils import serialize_callable
-from unittest2 import TestCase
+from unittest import TestCase
 
 
 class TestParentNamespaces(TestCase):
@@ -22,14 +23,14 @@ class TestCallableSerializer(TestCase):
         def foo(bar):
             """Prints the argument
             """
-            print 'bar is:', bar
+            print('bar is:', bar)
             return bar
 
         self.assertMultiLineEqual('''
 def foo(bar):
     """Prints the argument
     """
-    print 'bar is:', bar
+    print('bar is:', bar)
     return bar
 '''.lstrip(), serialize_callable(foo))
 
@@ -39,7 +40,7 @@ def foo(bar):
                 assert 'something'
 
         self.assertMultiLineEqual('''
-from unittest2.case import TestCase
+from unittest.case import TestCase
 
 
 class TestSomething(TestCase):
@@ -58,8 +59,8 @@ class Foo(tuple):
 
     def test_globals_to_import_can_be_passed_as_positional_arguments(self):
         def print_docs():
-            print parent_namespaces.__docs__
-            print serialize_callable.__docs__
+            print(parent_namespaces.__docs__)
+            print(serialize_callable.__docs__)
 
         self.assertMultiLineEqual('''
 from ftw.builder.utils import parent_namespaces
@@ -67,13 +68,13 @@ from ftw.builder.utils import serialize_callable
 
 
 def print_docs():
-    print parent_namespaces.__docs__
-    print serialize_callable.__docs__
+    print(parent_namespaces.__docs__)
+    print(serialize_callable.__docs__)
 '''.lstrip(), serialize_callable(print_docs, parent_namespaces, serialize_callable))
 
     def test_callable_is_required(self):
         with self.assertRaises(ValueError) as cm:
             serialize_callable(1)
 
-        self.assertEquals('A callable is required.',
-                          str(cm.exception))
+        self.assertEqual('A callable is required.',
+                         str(cm.exception))

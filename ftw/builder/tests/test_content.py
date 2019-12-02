@@ -9,6 +9,7 @@ from operator import methodcaller
 from plone.dexterity.interfaces import IDexterityContent
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from Products.CMFCore.utils import getToolByName
+from six.moves import map
 from zope.interface import Interface
 
 
@@ -41,7 +42,7 @@ class TestContentBuilder(IntegrationTestCase):
         create(Builder('folder').titled(u'doesnotprovideIFoo'))
 
         catalog = getToolByName(self.portal, 'portal_catalog')
-        self.assertEquals(
+        self.assertEqual(
             ['providesIFoo'],
             [brain.Title for brain in catalog(object_provides=IFoo.__identifier__)],
         )
@@ -51,34 +52,34 @@ class TestFolderBuilder(IntegrationTestCase):
 
     def test_creates_a_folder(self):
         folder = create(Builder('folder'))
-        self.assertEquals('Folder', folder.portal_type)
+        self.assertEqual('Folder', folder.portal_type)
 
 
 class TestPageBuilder(IntegrationTestCase):
 
     def test_Page_builder_creates_a_Document(self):
         page = create(Builder('page'))
-        self.assertEquals('Document', page.portal_type)
+        self.assertEqual('Document', page.portal_type)
 
     def test_alias_Document_also_works_for_creating_documents(self):
         page = create(Builder('document'))
-        self.assertEquals('Document', page.portal_type)
+        self.assertEqual('Document', page.portal_type)
 
 
 class TestFileBuilder(IntegrationTestCase):
 
     def test_creates_a_File_object(self):
         file_ = create(Builder('file'))
-        self.assertEquals('File', file_.portal_type)
+        self.assertEqual('File', file_.portal_type)
 
     def test_file_data_can_be_attached(self):
         obj = create(Builder('file')
                      .attach_file_containing(u'Data Data', u'data.txt'))
 
         file_ = get_file(obj)
-        self.assertEquals(
+        self.assertEqual(
             {'filename': u'data.txt',
-             'data': u'Data Data'},
+             'data': b'Data Data'},
 
             {'filename': file_.filename,
              'data': file_.data})
@@ -88,9 +89,9 @@ class TestFileBuilder(IntegrationTestCase):
                      .with_dummy_content())
 
         file_ = get_file(obj)
-        self.assertEquals(
+        self.assertEqual(
             {'filename': u'test.doc',
-             'data': u'Test data'},
+             'data': b'Test data'},
 
             {'filename': file_.filename,
              'data': file_.data})
@@ -100,16 +101,16 @@ class TestImageBuilder(IntegrationTestCase):
 
     def test_creates_an_image_object(self):
         image = create(Builder('image'))
-        self.assertEquals('Image', image.portal_type)
+        self.assertEqual('Image', image.portal_type)
 
     def test_setting_image_data(self):
         image = create(Builder('image')
-                       .attach_file_containing(u'IMG', u'foo.png'))
+                       .attach_file_containing(b'IMG', u'foo.png'))
         file_ = get_file(image)
 
-        self.assertEquals(
+        self.assertEqual(
             {'filename': u'foo.png',
-             'data': u'IMG'},
+             'data': b'IMG'},
 
             {'filename': file_.filename,
              'data': file_.data})
@@ -119,11 +120,11 @@ class TestImageBuilder(IntegrationTestCase):
                        .with_dummy_content())
         file_ = get_file(image)
 
-        self.assertEquals(
+        self.assertEqual(
             {'filename': u'image.gif',
-             'data': 'GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\x00\x00'
-             '\x00!\xf9\x04\x04\x00\x00\x00\x00,\x00\x00\x00\x00\x01'
-             '\x00\x01\x00\x00\x02\x02D\x01\x00;'},
+             'data': b'GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\x00\x00'
+             b'\x00!\xf9\x04\x04\x00\x00\x00\x00,\x00\x00\x00\x00\x01'
+             b'\x00\x01\x00\x00\x02\x02D\x01\x00;'},
 
             {'filename': file_.filename,
              'data': file_.data})
@@ -151,9 +152,9 @@ class TestCollectionBuilder(IntegrationTestCase):
                                             'o': 'plone.app.querystring.operation.string.is',
                                             'v': 'Collection'}]))
 
-        self.assertEquals(['The Collection'],
-                          map(methodcaller('Title'),
-                              collection.results()))
+        self.assertEqual(['The Collection'],
+                         list(map(methodcaller('Title'),
+                              collection.results())))
 
     def test_creating_colleciton_from_query_with_string(self):
         create(Builder('page').titled(u'The Page'))
@@ -162,9 +163,9 @@ class TestCollectionBuilder(IntegrationTestCase):
                             .titled(u'The Collection')
                             .from_query({'portal_type': 'Collection'}))
 
-        self.assertEquals(['The Collection'],
-                          map(methodcaller('Title'),
-                              collection.results()))
+        self.assertEqual(['The Collection'],
+                         list(map(methodcaller('Title'),
+                              collection.results())))
 
     def test_creating_colleciton_from_query_with_list(self):
         create(Builder('document').titled(u'The Page'))
@@ -174,7 +175,7 @@ class TestCollectionBuilder(IntegrationTestCase):
                             .from_query({'portal_type': ['Collection',
                                                          'Document']}))
 
-        self.assertEquals(
+        self.assertEqual(
             sorted(['The Page', 'The Collection']),
             sorted(map(methodcaller('Title'),
                        collection.results())))
